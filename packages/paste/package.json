@@ -1,0 +1,38 @@
+{
+  "name": "@netless/window-manager-paste-extend",
+  "version": "0.0.2-beta.1",
+  "description": "",
+  "main": "dist/extend-paste.js",
+  "module": "dist/extend-paste.esm.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "scripts": {
+    "dev": "onChange 'src/**/*' -- npm run build",
+    "build": "pnpm lint && tsc --project tsconfig.json && node build.mjs",
+    "lint": "eslint src"
+  },
+  "keywords": [],
+  "author": "hqer",
+  "license": "MIT",
+  "dependencies": {
+    "lodash": "^4.17.21",
+    "xss": "^1.0.15"
+  },
+  "devDependencies": {
+    "@netless/window-manager": "^1.0.6-beta.2",
+    "@types/lodash": "^4.17.4",
+    "@types/react": "^16.14.0",
+    "esbuild-inline-sass": "^0.4.4"
+  },
+  "peerDependencies": {
+    "@netless/window-manager": ">=1.0.6-beta.2"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "package.json"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
+}
