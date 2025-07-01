@@ -1,6 +1,8 @@
  # @netless/window-manager-paste-extend
 
-一个功能强大的粘贴和拖拽扩展插件，专为 [@netless/window-manager](https://github.com/netless-io/window-manager) 设计，支持文件转换并插入到白板应用中。
+一个功能强大的粘贴和拖拽扩展插件，专为 [@netless/window-manager](https://github.com/netless-io/window-manager) 设计，支持本地文件通过复制粘贴或拖拽添加到白板应用中。
+>**注意**:需要客户自己搭建静态资源服务器及文件转换服务,具体参考[如何实现文件转换](https://doc.shengwang.cn/doc/whiteboard/javascript/fastboard-sdk/advanced-features/convert-files#%E5%AE%9E%E7%8E%B0%E6%96%87%E6%A1%A3%E8%BD%AC%E6%8D%A2)
+>![Image](https://github.com/user-attachments/assets/7a06634f-2202-45e2-a969-4c26ba683bff)
 
 ## 功能特性
 
@@ -17,6 +19,7 @@
 - **图片**: `.jpg`, `.jpeg`, `.png`, `.webp`
 - **视频**: `.mp4`, `.mpeg`
 - **文档**: `.ppt`, `.pptx`, `.doc`, `.pdf`
+- **可以自定义文件类型**
 
 ## 安装
 
@@ -53,7 +56,7 @@ const pastePlugin = new ExtendPastePlugin({
   language: 'zh-CN',
   useDrop: true,
   convertFile: async (file) => {
-    // 你的文件转换逻辑
+    // 你的文件上传资源服务器及文件转换逻辑
     // 返回 PasteFileResult 或 null
   }
 });
@@ -76,6 +79,8 @@ const whiteWebSdk = new WhiteWebSdk({
 })
 const room = await whiteWebSdk.joinRoom({
     ...
+    // 必须开启使用原生剪贴板
+    useNativeClipboard: true,
     useMultiViews: true, 
 })
 const manager = await WindowManager.mount({ ... });
@@ -232,13 +237,6 @@ install(register, { as: 'DocsViewer' })
   list: string[];
 }
 ```
-
-## 浏览器支持
-
-- Chrome 88+
-- Firefox 85+
-- Safari 14+
-- Edge 88+
 
 ## 许可证
 

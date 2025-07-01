@@ -1,6 +1,8 @@
 # @netless/window-manager-paste-extend
 
-A powerful paste and drag-and-drop extension plugin for [@netless/window-manager](https://github.com/netless-io/window-manager), supporting file conversion and insertion into whiteboard applications.
+A powerful paste and drag-and-drop extension plugin for [@netless/window-manager](https://github.com/netless-io/window-manager), supporting local file insertion into whiteboard applications through copy-paste or drag-and-drop operations.
+
+>**Note**: Customers need to build their own static resource server and file conversion service. For details, refer to [Implementing File Conversion](https://docs.agora.io/en/interactive-whiteboard/develop/file-conversion-overview#introduction)
 
 ## Features
 
@@ -17,6 +19,7 @@ A powerful paste and drag-and-drop extension plugin for [@netless/window-manager
 - **Images**: `.jpg`, `.jpeg`, `.png`, `.webp`
 - **Videos**: `.mp4`, `.mpeg`
 - **Documents**: `.ppt`, `.pptx`, `.doc`, `.pdf`
+- **Custom file types can be defined**
 
 ## Installation
 
@@ -53,7 +56,7 @@ const pastePlugin = new ExtendPastePlugin({
   language: 'en',
   useDrop: true,
   convertFile: async (file) => {
-    // Your file conversion logic
+    // Your file upload resource server and file conversion logic
     // Return PasteFileResult or null
   }
 });
@@ -76,6 +79,8 @@ const whiteWebSdk = new WhiteWebSdk({
 })
 const room = await whiteWebSdk.joinRoom({
     ...
+    // The native clipboard must be enabled for use
+    useNativeClipboard: true,
     useMultiViews: true, 
 })
 const manager = await WindowManager.mount({ ... });
@@ -233,13 +238,6 @@ Emitted when the conversion list changes.
 }
 ```
 
-## Browser Support
-
-- Chrome 88+
-- Firefox 85+
-- Safari 14+
-- Edge 88+
-
 ## License
 
 MIT
@@ -247,4 +245,4 @@ MIT
 ## Related
 
 - [@netless/window-manager](https://github.com/netless-io/window-manager) - The core window manager library
-- [@netless/fastboard](https://github.com/netless-io/fastboard) - Fast whiteboard solutionConvertL
+- [@netless/fastboard](https://github.com/netless-io/fastboard) - Fast whiteboard solution
