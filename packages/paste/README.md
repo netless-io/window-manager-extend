@@ -104,12 +104,13 @@ manager.useExtendPlugin(pastePlugin);
 
 | Property | Type | Default | Description |
 |----------|------|---------|-------------|
-| `convertFile` | `(file: File) => Promise<PasteFileResult \| null>` | **Required** | File conversion function |
+| `convertFile` | `(file: File) => Promise<PasteFileResult \| null>` | **Required** | File conversion function that converts files to PasteFileResult, returns null if conversion fails |
+| `container` | `HTMLElement` | Main whiteboard | Specify paste and drop container, defaults to main whiteboard |
 | `enableDefaultUI` | `boolean` | `true` | Enable built-in uploading UI |
 | `language` | `'en' \| 'zh-CN'` | `'en'` | UI language |
-| `useDrop` | `boolean` | `false` | Enable drag and drop functionality |
-| `maxConvertFiles` | `number` | `10` | Maximum files to convert at once |
-| `extension` | `string[]` | `['.jpg', '.jpeg', '.png', '.webp', '.mp4', '.mpeg', '.ppt', '.pptx', '.doc', '.pdf']` | Supported file extensions |
+| `useDrop` | `boolean` | `false` | Whether to use drop events to convert files, if true then drop events can be used to convert files |
+| `maxConvertFiles` | `number` | `10` | Maximum number of files to convert at once, if exceeded then conversion will not proceed |
+| `extension` | `string[]` | `['.jpg', '.jpeg', '.png', '.webp', '.mp4', '.mpeg', '.ppt', '.pptx', '.doc', '.pdf']` | Specify file extension range, if empty then uses default supported extensions |
 | `fileFilter` | `(file: File) => boolean` | - | Custom file filter function |
 
 ## File Conversion Results

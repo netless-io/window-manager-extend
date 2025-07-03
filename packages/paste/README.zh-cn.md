@@ -104,12 +104,13 @@ manager.useExtendPlugin(pastePlugin);
 
 | 属性 | 类型 | 默认值 | 描述 |
 |------|------|--------|------|
-| `convertFile` | `(file: File) => Promise<PasteFileResult \| null>` | **必需** | 文件转换函数 |
+| `convertFile` | `(file: File) => Promise<PasteFileResult \| null>` | **必需** | 文件转换函数，将文件转换为 PasteFileResult，如果转换失败则返回 null |
+| `container` | `HTMLElement` | 主白板 | 指定 paste、drop 容器，默认是主白板 |
 | `enableDefaultUI` | `boolean` | `true` | 启用内置上传UI |
 | `language` | `'en' \| 'zh-CN'` | `'en'` | UI语言 |
-| `useDrop` | `boolean` | `false` | 启用拖拽功能 |
-| `maxConvertFiles` | `number` | `10` | 单次最大转换文件数 |
-| `extension` | `string[]` | `['.jpg', '.jpeg', '.png', '.webp', '.mp4', '.mpeg', '.ppt', '.pptx', '.doc', '.pdf']` | 支持的文件扩展名 |
+| `useDrop` | `boolean` | `false` | 是否使用 drop 事件转换文件，如果为 true 则可以使用 drop 事件转换文件 |
+| `maxConvertFiles` | `number` | `10` | 单次最大文件转换数量，如果超过这个数量则不进行转换 |
+| `extension` | `string[]` | `['.jpg', '.jpeg', '.png', '.webp', '.mp4', '.mpeg', '.ppt', '.pptx', '.doc', '.pdf']` | 指定文件扩展名范围，如果为空则使用默认支持的扩展名 |
 | `fileFilter` | `(file: File) => boolean` | - | 自定义文件过滤函数 |
 
 ## 文件转换结果
