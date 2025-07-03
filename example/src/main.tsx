@@ -138,6 +138,7 @@ async function createFastboardUI(params: {
     const pastePlugin = new ExtendPastePlugin({
       useDrop: true,
       maxConvertFiles: 3,
+      container: elm,
       // language: 'zh-CN',
       convertFile: async (file) => {
         const result = await uploadFile(file, fastboard.room.region as Region);
@@ -377,7 +378,7 @@ const FastboardReact = (props: { data: any }) => {
   }
   // ui.update({ theme: 'dark' });
   window.fastboard = fastboard;
-  return <Fastboard app={fastboard} />  
+  return <Fastboard app={fastboard} />
 }
 
 const Container = () => {
@@ -393,7 +394,7 @@ const Container = () => {
   }, [data, page])
 
   useEffect(() => {
-    if (ref.current) {
+    if (ref.current && page === "fastboard") {
       console.log('ref.current', ref.current);
       createFastboardUI({
         elm: ref.current,
@@ -404,7 +405,7 @@ const Container = () => {
         isWritable
       })
     }
-  }, [isWritable, roomToken, uid, uuid, whiteboard])
+  }, [isWritable, roomToken, uid, uuid, page])
   
   return <div className='whiteboard-container' ref={ref}>
     { whiteboard }

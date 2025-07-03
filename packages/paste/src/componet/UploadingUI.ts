@@ -67,14 +67,16 @@ export class UploadingUI {
   }
 
   private removeContainer(){
-    this.plugin.DropContainer?.removeChild(this.container);
+    if (this.plugin.container?.contains(this.container)){
+      this.plugin.container?.removeChild(this.container);
+    }
     this.$disposeDrag?.destroy();
   }
 
   private createContainer(){
     this.container.classList.add(this.c('uploading-container'), this.theme);
     this.container.innerHTML = '';
-    this.plugin.DropContainer?.appendChild(this.container);
+    this.plugin.container?.appendChild(this.container);
     this.$disposeDrag?.destroy();
   }
 
@@ -135,7 +137,7 @@ export class UploadingUI {
       bottom.classList.add(this.c('uploading-des'));
       bottom.innerText = this.i18n.uploading;
       this.container.append(title, list, bottom);
-      this.plugin.DropContainer?.appendChild(this.container);
+      this.plugin.container?.appendChild(this.container);
       this.$disposeDrag = makeDraggable(this.container);
     }
   }

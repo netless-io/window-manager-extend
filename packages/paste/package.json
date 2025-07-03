@@ -1,6 +1,6 @@
 {
   "name": "@netless/window-manager-paste-extend",
-  "version": "0.0.2-beta.1",
+  "version": "0.0.2-beta.2",
   "description": "",
   "main": "dist/extend-paste.js",
   "module": "dist/extend-paste.esm.js",
@@ -19,13 +19,13 @@
     "xss": "^1.0.15"
   },
   "devDependencies": {
-    "@netless/window-manager": "^1.0.6-beta.2",
+    "@netless/window-manager": "^1.0.6-beta.3",
     "@types/lodash": "^4.17.4",
     "@types/react": "^16.14.0",
     "esbuild-inline-sass": "^0.4.4"
   },
   "peerDependencies": {
-    "@netless/window-manager": ">=1.0.6-beta.2"
+    "@netless/window-manager": ">=1.0.6-beta.3"
   },
   "files": [
     "dist",

@@ -1,4 +1,4 @@
-import { ExtendPlugin, type WindowManager } from '@netless/window-manager';
+import { ExtendContext, ExtendPlugin, type WindowManager } from '@netless/window-manager';
 import type { PasteCustomResult, PasteDocViewResult, PasteFileResult, PasteImageResult, PasteMediaResult, PastePdfResult, PasteSildeResult } from './types';
 import xss from 'xss';
 import { isBoolean } from 'lodash';
@@ -14,6 +14,8 @@ export type ExtendPasteOptions = {
    * @returns type PasteFileResult
    */
   convertFile: (file: File)=> Promise<PasteFileResult | null>;
+  /** 指定paste、drop容器, 默认是主白板 */
+  container?: HTMLElement;
   /** 是否启用默认UI */
   enableDefaultUI?: boolean;
   /** 语言 */
@@ -42,6 +44,8 @@ export class ExtendPastePlugin extends ExtendPlugin {
   private language: Language = 'en';
   private useDrop: boolean = false;
   private maxConvertFiles: number = 10;
+  private isMounted: boolean = false;
+  private isCreated: boolean = false;
   constructor(options: ExtendPasteOptions) {
     super();
     this.options = options;
@@ -61,8 +65,8 @@ export class ExtendPastePlugin extends ExtendPlugin {
     return this.context.windowManager;
   }
 
-  get DropContainer() {
-    return this.windowManager.mainView?.divElement?.parentElement;
+  get container() {
+    return this.options.container || this.context.windowManagerContainer || this.mainViewElement?.parentElement;
   }
 
   get mainViewElement() {
@@ -77,28 +81,38 @@ export class ExtendPastePlugin extends ExtendPlugin {
     return this.context.windowManager.room?.isWritable;
   }
 
+  get appliancePlugin() {
+    return (this.windowManager as any)?._appliancePlugin;
+  }
+
   get hasAppliancePlugin(){
-    return !!(this.windowManager as any)?._appliancePlugin;
+    return !!this.appliancePlugin;
   }
 
   onDestroy(): void {
-    this.windowManager.emitter.off('onMainViewMounted', this.onMainViewMountedHandler);
     this.unMount();
-    this.uploadingUI?.destroy();
   }
 
   onCreate(): void {
-    if (this.mainViewElement) {
-      this.onMainViewMountedHandler();
+    this.isCreated = true;
+    if (this.container) {
+      this.mount();
+      this.isMounted = true;
     }
-    this.windowManager.emitter.on('onMainViewMounted', this.onMainViewMountedHandler);
-    this.windowManager.emitter.on('onMainViewRebind', this.onMainViewMountedHandler);
   }
-
-  private onMainViewMountedHandler = () => {  
-    this.unMount();
-    this.mount();
-  };
+  
+  protected _inject(context: ExtendContext): void {
+    super._inject(context);
+    if (!this.isCreated) {
+      return;
+    }
+    if (this.container) {
+      if (this.isMounted) {
+        this.unMount();
+      }
+      this.mount();
+    }
+  }
 
   private observeconvertSet = (operation: 'add' | 'delete' | 'update', value: string) => {
     this.emit('convertListChange', {
@@ -115,8 +129,8 @@ export class ExtendPastePlugin extends ExtendPlugin {
     return false;
   }
 
-  handlePaste = (e: any) => {
-    console.log('handlePaste===>', e);
+  private handlePaste = (e: ClipboardEvent) => {
+    // console.log('handlePaste===>', e);
     if (!this.isWritable) {
       return;
     }
@@ -126,22 +140,9 @@ export class ExtendPastePlugin extends ExtendPlugin {
       return;
     }
     // 处理文本内容
-    const text = e.clipboardData?.getData('text');
-    if (text) {
-      e.stopPropagation();
-      e?.stopImmediatePropagation();
-      if (this.hasActiveEditor() ) {
-        return;
-      }
-      const str = xss(text, {
-        whiteList: {}, // 白名单为空，表示过滤所有标签
-        stripIgnoreTag: true, // 过滤所有非白名单标签的HTML
-        stripIgnoreTagBody: ['script'], // script标签较特殊，需要过滤标签中间的内容
-      });
-      if (!str) {
-        return;
-      }
-      this.handlePasteText(str);
+    const isText = this.handlePasteJustText(e);
+    if (isText) {
+      return;
     }
 
     const items = e.clipboardData?.items;
@@ -180,6 +181,29 @@ export class ExtendPastePlugin extends ExtendPlugin {
     Promise.all(promises).finally(() => {
       this.convertSet.clear();
     });
+  };
+
+  private handlePasteJustText = (e: ClipboardEvent): boolean => {
+    // 处理文本内容
+    const text = e.clipboardData?.getData('text');
+    if (text) {
+      e.stopPropagation();
+      e?.stopImmediatePropagation();
+      if (this.hasActiveEditor() ) {
+        return false;
+      }
+      const str = xss(text, {
+        whiteList: {}, // 白名单为空，表示过滤所有标签
+        stripIgnoreTag: true, // 过滤所有非白名单标签的HTML
+        stripIgnoreTagBody: ['script'], // script标签较特殊，需要过滤标签中间的内容
+      });
+      if (!str) {
+        return false;
+      }
+      this.handlePasteText(str);
+      return true;
+    }
+    return false;
   };
 
   private async handlePasteFile(file: File) {
@@ -352,36 +376,39 @@ export class ExtendPastePlugin extends ExtendPlugin {
     e.stopPropagation();
   };
 
-  mount(): void {
+  private mount(): void {
     if (this.enableDefaultUI) {
       this.uploadingUI = new UploadingUI({
         plugin: this,
         language: this.language,
       });
     }
-    if (this.mainViewElement) {
-      this.mainViewElement.addEventListener('paste', this.handlePaste, false);
+    if (this.container) {
+      // console.log('mount===>', this.container);
+      this.container.addEventListener('paste', this.handlePaste, false);
       if (this.useDrop) {
         // 防止浏览器默认行为
         document.addEventListener('dragenter', this.preventDefaults);
         document.addEventListener('dragover', this.preventDefaults);
         document.addEventListener('dragleave', this.preventDefaults);
         document.addEventListener('drop', this.preventDefaults);
-        this.mainViewElement.addEventListener('drop', this.handleDrop);
+        this.container.addEventListener('drop', this.handleDrop);
       }
     }
+    this.isMounted = true;
   }
-  unMount(){
-    if (this.mainViewElement) {
-      this.mainViewElement.removeEventListener('paste', this.handlePaste, false);
+  private unMount(){
+    if (this.container) {
+      this.container.removeEventListener('paste', this.handlePaste, false);
       if (this.useDrop) {
-        this.mainViewElement.removeEventListener('drop', this.handleDrop);
         document.removeEventListener('dragenter', this.preventDefaults);
         document.removeEventListener('dragover', this.preventDefaults);
         document.removeEventListener('dragleave', this.preventDefaults);
         document.removeEventListener('drop', this.preventDefaults);
+        this.container.removeEventListener('drop', this.handleDrop);
       }
     }
     this.uploadingUI?.destroy();
+    this.isMounted = false;
   }
 }
