@@ -139,10 +139,17 @@ export class ExtendPastePlugin extends ExtendPlugin {
       // 这部分逻辑有app-quill插件处理
       return;
     }
-    // 处理文本内容
-    const isText = this.handlePasteJustText(e);
-    if (isText) {
-      return;
+
+    // 如果聚焦的场景有appliancePlugin的工具,且画笔有被selected,则不处理粘贴文本
+    if (!(
+      this.hasAppliancePlugin && this.windowManager.focusedView && 
+        this.appliancePlugin.hasElements(this.windowManager.focusedView.focusScenePath,(toolsType: number)=>toolsType===5)
+    )) {
+      // 处理文本内容
+      const isText = this.handlePasteJustText(e);
+      if (isText) {
+        return;
+      }
     }
 
     const items = e.clipboardData?.items;
