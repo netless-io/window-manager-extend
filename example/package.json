@@ -18,6 +18,7 @@
     "@netless/fastboard-react": "^1.0.7",
     "@netless/window-manager": "^1.0.6",
     "@netless/window-manager-paste-extend": "workspace:*",
+    "@netless/window-manager-background-extend": "workspace:*",
     "antd": "^5.11.4",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",

@@ -12,6 +12,7 @@ declare global {
       appInMainViewPlugin: any;
       manager: any;
       clipboardData: any;
+      backgroundPlugin: any;
       getSelection(): Selection;
     }
 }

@@ -14,12 +14,14 @@ import fullWorkerString from '@netless/appliance-plugin/dist/fullWorker.js?raw';
 import subWorkerString from '@netless/appliance-plugin/dist/subWorker.js?raw';
 import { createFastboard, createUI, apps, register } from '@netless/fastboard';
 import { Fastboard, useFastboard } from '@netless/fastboard-react';
-import { ExtendPastePlugin } from '@netless/window-manager-paste-extend'
+import { ExtendPastePlugin } from '@netless/window-manager-paste-extend';
+import { ExtendBackgroundPlugin } from '@netless/window-manager-background-extend';
 import { install } from "@netless/app-presentation"
 import { useEffect } from 'react';
 import { uploadFile } from './server-api/uploadfile';
 import { getImageSize } from './utils';
 import { Region } from './region';
+import { autorun } from 'white-web-sdk';
 const fullWorkerBlob = new Blob([fullWorkerString], { type: 'text/javascript' });
 const fullWorkerUrl = URL.createObjectURL(fullWorkerBlob);
 const subWorkerBlob = new Blob([subWorkerString], { type: 'text/javascript' });
@@ -135,90 +137,107 @@ async function createFastboardUI(params: {
   })
 
   if (fastboard.manager) {
-    const pastePlugin = new ExtendPastePlugin({
-      useDrop: true,
-      maxConvertFiles: 3,
-      container: elm,
-      // language: 'zh-CN',
-      convertFile: async (file) => {
-        const result = await uploadFile(file, fastboard.room.region as Region);
-        switch (result.kind) {
-          case 'Image': {
-            const { width, height } = await getImageSize(file);
-            if (result.url) {
-              return {
-                kind: 'Image',
-                url: result.url,
-                width,
-                height,
-                crossOrigin: true
-              };
-            }
-            return null;
-          }
-          case 'MediaPlayer': {
-            if (result.url) {
-              return {
-                kind: 'MediaPlayer',
-                title: file.name,
-                url: result.url,
-              };
-            }
-            return null;
-          }
-          case 'Slide': {
-            if (result.convertedUrl && result.taskId) {
-              return {
-                kind: 'Slide',
-                title: file.name,
-                url: result.convertedUrl,
-                taskId: result.taskId,
-                scenePath: `/pptx/${result.taskId}`
-              };
-            }
-            return null;
-          }
-          case 'DocsViewer': {
-            if (result.convertedUrl && result.taskId && result.images) {
-              const scenes = Object.entries(result.images).map(([name, value]) => ({
-                name: name,
-                ppt: {
-                  src: value.url,
-                  width: value.width,
-                  height: value.height
-                }
-              }));
-              return {
-                kind: 'DocsViewer',
-                title: file.name,
-                taskId: result.taskId,
-                scenePath: `/docs/${result.taskId}`,
-                scenes
-              };
-            }
-            return null;
-          }
-          case 'PDFjs': {
-            if (result.convertedUrl && result.taskId) {
-              return {
-                kind: 'PDFjs',
-                title: file.name,
-                prefix: result.convertedUrl,
-                taskId: result.taskId,
-                scenePath: `/pdf/${result.taskId}`
-              };
-            }
-            return null;
-          }
-          case 'Error':
-            console.error(`🔄 文件转换失败, error: ${result.error}`);
-            return null;
-          default:
-            return null;
-        }
+    // const pastePlugin = new ExtendPastePlugin({
+    //   useDrop: true,
+    //   maxConvertFiles: 3,
+    //   container: elm,
+    //   // language: 'zh-CN',
+    //   convertFile: async (file) => {
+    //     const result = await uploadFile(file, fastboard.room.region as Region);
+    //     switch (result.kind) {
+    //       case 'Image': {
+    //         const { width, height } = await getImageSize(file);
+    //         if (result.url) {
+    //           return {
+    //             kind: 'Image',
+    //             url: result.url,
+    //             width,
+    //             height,
+    //             crossOrigin: true
+    //           };
+    //         }
+    //         return null;
+    //       }
+    //       case 'MediaPlayer': {
+    //         if (result.url) {
+    //           return {
+    //             kind: 'MediaPlayer',
+    //             title: file.name,
+    //             url: result.url,
+    //           };
+    //         }
+    //         return null;
+    //       }
+    //       case 'Slide': {
+    //         if (result.convertedUrl && result.taskId) {
+    //           return {
+    //             kind: 'Slide',
+    //             title: file.name,
+    //             url: result.convertedUrl,
+    //             taskId: result.taskId,
+    //             scenePath: `/pptx/${result.taskId}`
+    //           };
+    //         }
+    //         return null;
+    //       }
+    //       case 'DocsViewer': {
+    //         if (result.convertedUrl && result.taskId && result.images) {
+    //           const scenes = Object.entries(result.images).map(([name, value]) => ({
+    //             name: name,
+    //             ppt: {
+    //               src: value.url,
+    //               width: value.width,
+    //               height: value.height
+    //             }
+    //           }));
+    //           return {
+    //             kind: 'DocsViewer',
+    //             title: file.name,
+    //             taskId: result.taskId,
+    //             scenePath: `/docs/${result.taskId}`,
+    //             scenes
+    //           };
+    //         }
+    //         return null;
+    //       }
+    //       case 'PDFjs': {
+    //         if (result.convertedUrl && result.taskId) {
+    //           return {
+    //             kind: 'PDFjs',
+    //             title: file.name,
+    //             prefix: result.convertedUrl,
+    //             taskId: result.taskId,
+    //             scenePath: `/pdf/${result.taskId}`
+    //           };
+    //         }
+    //         return null;
+    //       }
+    //       case 'Error':
+    //         console.error(`🔄 文件转换失败, error: ${result.error}`);
+    //         return null;
+    //       default:
+    //         return null;
+    //     }
+    //   }
+    // });
+    // fastboard.manager.useExtendPlugin(pastePlugin);
+    const backgroundPlugin = new ExtendBackgroundPlugin()
+    fastboard.manager.useExtendPlugin(backgroundPlugin)
+
+    fastboard.manager.emitter.on('onMainViewMounted', (view) => {
+      console.log('onMainViewMounted', view.size);
+      // 模拟是老师初始化 则设置背景图片
+      if (fastboard.room.uid.indexOf('1234') > 0) {
+        const {width, height} = view.size;
+        backgroundPlugin.setBackgroundImage({
+          url: "https://h5-static.talk-cloud.net/static/wukong_4.6.2.1/asset/18e47f9235ba112c3f02.png",
+          width,
+          height,
+          crossOrigin: 'anonymous'
+        })
       }
     });
-    fastboard.manager.useExtendPlugin(pastePlugin);
+    window.backgroundPlugin = backgroundPlugin;
   }
   const ui = createUI(fastboard, elm);
   // ui.update({ theme: 'dark' });

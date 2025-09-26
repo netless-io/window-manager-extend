@@ -108,6 +108,9 @@ importers:
       '@netless/window-manager':
         specifier: ^1.0.6
         version: 1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53)
+      '@netless/window-manager-background-extend':
+        specifier: workspace:*
+        version: link:../packages/background
       '@netless/window-manager-paste-extend':
         specifier: workspace:*
         version: link:../packages/paste
@@ -160,6 +163,25 @@ importers:
       vite:
         specifier: ^5.0.0
         version: 5.4.19(@types/node@24.0.10)(sass@1.89.2)
+
+  packages/background:
+    dependencies:
+      lodash:
+        specifier: ^4.17.21
+        version: 4.17.21
+    devDependencies:
+      '@netless/window-manager':
+        specifier: ^1.0.6
+        version: 1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53)
+      '@types/lodash':
+        specifier: ^4.17.4
+        version: 4.17.20
+      esbuild-inline-sass:
+        specifier: ^0.4.4
+        version: 0.4.4(esbuild@0.21.5)
+      white-web-sdk:
+        specifier: '>=2.16.53'
+        version: 2.16.53
 
   packages/paste:
     dependencies:

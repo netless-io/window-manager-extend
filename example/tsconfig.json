@@ -26,10 +26,10 @@
     "noImplicitThis": false,
 
     /* Paths */
-    "baseUrl": ".",
-    "paths": {
-      "@netless/app-in-mainview-plugin": ["../src"]
-    }
+    // "baseUrl": ".",
+    // "paths": {
+    //   "@netless/app-in-mainview-plugin": ["../src"]
+    // }
   },
   "include": ["src","types"],
   "references": [{ "path": "./tsconfig.node.json" }]
