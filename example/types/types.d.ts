@@ -13,6 +13,7 @@ declare global {
       manager: any;
       clipboardData: any;
       backgroundPlugin: any;
+      scrollbarPlugin: any;
       getSelection(): Selection;
     }
 }
