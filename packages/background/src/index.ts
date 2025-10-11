@@ -71,7 +71,7 @@ export class ExtendBackgroundPlugin extends ExtendPlugin {
     return this.windowManager.attributes;
   }
 
-  setBackgroundImage(image: ExtendBackgroundImage){
+  setBackgroundImage(image?: ExtendBackgroundImage){
     if (!this.isWritable) {
       throw new Error('[ExtendBackgroundPlugin] setBackgroundImage must be called in writable room');
       // return;
@@ -196,11 +196,12 @@ export class ExtendBackgroundPlugin extends ExtendPlugin {
 
   private onCameraUpdatedHandler = () => {
     if (this.backgroundImage) {
-      const { scale, centerX, centerY } = this.mainView.camera;
+      const { centerX, centerY } = this.mainView.camera;
       const originPosition = this.mainView.convertToPointOnScreen(0, 0);
       const position = this.mainView.convertToPointOnScreen(centerX, centerY);
       const translate = [originPosition.x - position.x, originPosition.y - position.y];
-      const matrix = `matrix(${scale}, 0, 0, ${scale}, ${translate[0]}, ${translate[1]})`;
+      // const matrix = `matrix(${scale}, 0, 0, ${scale}, ${translate[0]}, ${translate[1]})`;
+      const matrix = `matrix(1, 0, 0, 1, ${translate[0]}, ${translate[1]})`;
       this.backgroundImage.style.transform = matrix;
     }
   };

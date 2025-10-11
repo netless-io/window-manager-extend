@@ -141,26 +141,31 @@ async function createFastboardUI(params: {
     const backgroundPlugin = new ExtendBackgroundPlugin()
     fastboard.manager.useExtendPlugin(backgroundPlugin)
     const scrollbarPlugin = new ExtendScrollbarPlugin({
-      readonly: true
+      readonly: true,
+      scrollbarEventCallback: {
+        onScrollCameraUpdated: (originScale, scale) => {
+          console.log('onScrollCameraUpdated', originScale, scale);
+        }
+      }
     })
     fastboard.manager.useExtendPlugin(scrollbarPlugin)
     fastboard.manager.emitter.on('onMainViewMounted', (view) => {
       console.log('onMainViewMounted', view.size);
       // 模拟是老师初始化 则设置背景图片
-      const {width, height} = view.size;
-      fastboard.manager.setCameraBound({
-        centerX: 0,
-        centerY: 0,
-        width,
-        height,
-        minContentMode: () => {
-          return 1;
-        },
-        maxContentMode: () => {
-          return 5;
-        }
-      });
       if (fastboard.room.uid.indexOf('1234') > 0) {
+        const {width, height} = view.size;
+        fastboard.manager.setCameraBound({
+          centerX: 0,
+          centerY: 0,
+          width,
+          height,
+          minContentMode: () => {
+            return 1;
+          },
+          maxContentMode: () => {
+            return 5;
+          }
+        });
         if (!fastboard.manager.attributes.mainViewSize && !fastboard.manager.attributes.mainViewCamera) {
           fastboard.manager.moveCamera({scale: 1, centerX: 0, centerY: 0})
         }
@@ -170,9 +175,10 @@ async function createFastboardUI(params: {
           height,
           crossOrigin: 'anonymous'
         })
-        scrollbarPlugin.setOriginSize({
+        scrollbarPlugin.setOriginBound({
           width: width,
-          height: height
+          height: height,
+          scale: 1
         })
         scrollbarPlugin.setReadonly(false);
       }

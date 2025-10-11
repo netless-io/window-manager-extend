@@ -2,14 +2,24 @@ import { AnimationMode, ExtendContext, ExtendPlugin, type WindowManager } from '
 import './style.scss';
 import { makeDraggable } from './Draggable';
 import { autorun, toJS } from 'white-web-sdk';
-import { isEqual } from 'lodash';
+import { debounce, isEqual } from 'lodash';
+
+export interface ScrollbarEventCallback {
+  onScrollbarDragStart?: () => void;
+  onScrollbarDragEnd?: () => void;
+  onScrollbarDragX?: (x: number) => void;
+  onScrollbarDragY?: (y: number) => void;
+  onScrollCameraUpdated?: (originScale: number, scale: number) => void;
+}
 
 export type ExtendScrollbarOptions = {
   readonly?: boolean;
-  originSize?: {
+  originBound?: {
     width: number;
     height: number;
+    scale: number;
   };
+  scrollbarEventCallback?: ScrollbarEventCallback
 }
 
 export class ExtendScrollbarPlugin extends ExtendPlugin {
@@ -34,6 +44,11 @@ export class ExtendScrollbarPlugin extends ExtendPlugin {
   constructor(options: ExtendScrollbarOptions) {
     super();
     this.options = {
+      originBound: {
+        width: 0,
+        height: 0,
+        scale: 1,
+      },
       readonly: false,
       ...options,
     };
@@ -87,11 +102,11 @@ export class ExtendScrollbarPlugin extends ExtendPlugin {
     this.mount();
   }
 
-  setOriginSize(size: { width: number, height: number }){
+  setOriginBound(bound: { width: number, height: number, scale: number }){
     if (!this.isWritable) {
       throw new Error('[ExtendBackgroundPlugin] setBackgroundImage must be called in writable room');
     }
-    this.windowManager.safeUpdateAttributes(['scrollbarOriginSize'], size);
+    this.windowManager.safeUpdateAttributes(['scrollbarOriginBound'], bound);
   }
   
   protected _inject(context: ExtendContext): void {
@@ -112,13 +127,14 @@ export class ExtendScrollbarPlugin extends ExtendPlugin {
       centerY: camera.centerY,
       scale: camera.scale,
     };
+    this.options.scrollbarEventCallback?.onScrollbarDragStart?.();
   };
 
   private getScrollXRange(camera: {scale: number}) {
     const size = this.mainView.size;
     const width = size.width / camera.scale;
-    const { width: originWidth } = this.options.originSize || { width };
-    const ratio = Math.round(width / originWidth * 1000) / 1000;
+    const { width: originWidth, scale: originScale } = this.options.originBound || { width, scale: 1 };
+    const ratio = Math.round(width / (originWidth / originScale) * 1000) / 1000;
     const scrollWidth = originWidth * (1-ratio);
     const minX = -scrollWidth / 2;
     const maxX = scrollWidth / 2;
@@ -128,8 +144,8 @@ export class ExtendScrollbarPlugin extends ExtendPlugin {
   private getScrollYRange(camera: {scale: number}) {
     const size = this.mainView.size;
     const height = size.height / camera.scale;
-    const { height: originHeight } = this.options.originSize || { height };
-    const ratio = Math.round(height / originHeight * 1000) / 1000;
+    const { height: originHeight, scale: originScale } = this.options.originBound || { height,  scale: 1 };
+    const ratio = Math.round(height / (originHeight / originScale) * 1000) / 1000;
     const scrollHeight = originHeight * (1-ratio);
     const minY = -scrollHeight / 2;
     const maxY = scrollHeight / 2;
@@ -150,6 +166,7 @@ export class ExtendScrollbarPlugin extends ExtendPlugin {
         centerX,
         animationMode: 'immediately' as AnimationMode,
       });
+      this.options.scrollbarEventCallback?.onScrollbarDragX?.(centerX);
     }
   };
 
@@ -167,11 +184,13 @@ export class ExtendScrollbarPlugin extends ExtendPlugin {
         centerY,
         animationMode: 'immediately' as AnimationMode,
       }); 
+      this.options.scrollbarEventCallback?.onScrollbarDragY?.(centerY);
     }
   };
 
   private onDragEnd = () => {
     this.cameraCache = undefined;
+    this.options.scrollbarEventCallback?.onScrollbarDragEnd?.();
   };
 
   private mount(): void {
@@ -221,9 +240,9 @@ export class ExtendScrollbarPlugin extends ExtendPlugin {
     this.mainViewElement?.appendChild(this.container);
     this.onCameraUpdatedHandler();
     this.stateDisposer = autorun(() => {
-      const originSize = toJS(this.attributes.scrollbarOriginSize);
-      if (!isEqual(originSize, this.options.originSize)) {
-        this.options.originSize = originSize;
+      const originBound = toJS(this.attributes.scrollbarOriginBound);
+      if (!isEqual(originBound, this.options.originBound)) {
+        this.options.originBound = originBound;
         this.onCameraUpdatedHandler();
       }
     });
@@ -232,17 +251,16 @@ export class ExtendScrollbarPlugin extends ExtendPlugin {
     this.windowManager.room.callbacks.on('onEnableWriteNowChanged', this.onEnableWriteNowChangedHandler);
   }
 
-  private onCameraUpdatedHandler = () => {
+  private onCameraUpdatedHandler = debounce(() => {
     if (this.options.readonly) return;
     const { scale, centerX, centerY } = this.mainView.camera;
     const width = this.mainView.size.width / scale;
     const height = this.mainView.size.height / scale;
-    const { width: originWidth } = this.options.originSize || { width, height };
-    const ratio = Math.round(width / originWidth * 1000) / 1000;
-    const ratioClient = Math.round(this.mainView.size.width / originWidth * 1000) / 1000;
+    const { width: originWidth, scale: originScale } = this.options.originBound || { width, height, scale: 1 };
+    const ratio = Math.round(width / (originWidth / originScale) * 1000) / 1000;
 
-    const scrollX = Math.round(centerX * ratioClient);
-    const scrollY = Math.round(centerY * ratioClient);
+    const scrollX = Math.round(centerX * this.ratioClient);
+    const scrollY = Math.round(centerY * this.ratioClient);
 
     if (this.scrollbarX) {
       this.scrollbarX.style.width = `${ratio * 100}%`;
@@ -254,7 +272,26 @@ export class ExtendScrollbarPlugin extends ExtendPlugin {
       this.scrollbarY.style.display = ratio >= 1 ? 'none' : 'block';
       this.scrollbarY.style.transform = `translateY(${scrollY}px)`;
     }
-  };
+    this.options.scrollbarEventCallback?.onScrollCameraUpdated?.(originScale * this.ratioClient, scale);
+  }, 50);
+
+  get originBound() {
+    return this.options.originBound || { width: 0, height: 0, scale: 1 };
+  }
+
+  get ratioClient() {
+    const { width: originWidth } = this.originBound;
+    return Math.round(this.mainView.size.width / originWidth * 1000) / 1000;
+  }
+
+  get originScale() {
+    const { scale } = this.originBound;
+    return scale  * this.ratioClient;
+  }
+
+  get scale(){
+    return this.mainView.camera.scale;
+  }
 
   private onMainViewRebindHandler = () => {
     if (this.isMounted) {
