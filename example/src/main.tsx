@@ -149,16 +149,33 @@ async function createFastboardUI(params: {
       }
     })
     fastboard.manager.useExtendPlugin(scrollbarPlugin)
+
     fastboard.manager.emitter.on('onMainViewMounted', (view) => {
-      console.log('onMainViewMounted', view.size);
-      // 模拟是老师初始化 则设置背景图片
-      if (fastboard.room.uid.indexOf('1234') > 0) {
-        const {width, height} = view.size;
+      const setOriginBound = () => {
+        let originBound = null;
+        if (sessionStorage.getItem('originBound')) {
+          originBound = JSON.parse(sessionStorage.getItem('originBound') || '{}');
+        } else {
+          const { width, height } = fastboard.manager.mainView.size;
+          originBound = {
+            width,
+            height,
+            scale: 1
+          }
+          sessionStorage.setItem('originBound', JSON.stringify(originBound));
+        }
+        console.log('onMainViewMounted', view.size, originBound, fastboard.manager.mainView.size);
+        backgroundPlugin.setOriginBound(originBound);
+        scrollbarPlugin.setOriginBound({
+          width: originBound.width,
+          height: originBound.height,
+          scale: 1
+        });
         fastboard.manager.setCameraBound({
           centerX: 0,
           centerY: 0,
-          width,
-          height,
+          width: originBound.width,
+          height: originBound.height,
           minContentMode: () => {
             return 1;
           },
@@ -166,25 +183,26 @@ async function createFastboardUI(params: {
             return 5;
           }
         });
-        if (!fastboard.manager.attributes.mainViewSize && !fastboard.manager.attributes.mainViewCamera) {
-          fastboard.manager.moveCamera({scale: 1, centerX: 0, centerY: 0})
-        }
+        // 如果需要设置背景图
         backgroundPlugin.setBackgroundImage({
           url: "https://h5-static.talk-cloud.net/static/wukong_4.6.2.1/asset/18e47f9235ba112c3f02.png",
-          width,
-          height,
           crossOrigin: 'anonymous'
         })
-        scrollbarPlugin.setOriginBound({
-          width: width,
-          height: height,
-          scale: 1
-        })
-        scrollbarPlugin.setReadonly(false);
       }
+      // 模拟是老师初始化 则设置背景图片
+      if (fastboard.room.uid.indexOf('1234') > 0) {
+        setOriginBound();
+        scrollbarPlugin.setReadonly(false);
+        // 判断是非是老师第一次进入房间
+        if (!fastboard.manager.attributes.mainViewSize && !fastboard.manager.attributes.mainViewCamera) {
+          fastboard.manager.moveCamera({scale: 1, centerX: 0, centerY: 0})
+        } else {
+          // fastboard.manager.moveCamera({scale: backgroundPlugin.originScale})
+        }
+      }
+      window.backgroundPlugin = backgroundPlugin;
+      window.scrollbarPlugin = scrollbarPlugin;
     });
-    window.backgroundPlugin = backgroundPlugin;
-    window.scrollbarPlugin = scrollbarPlugin;
     fastboard.appliancePlugin.disableCameraTransform = true;
     fastboard.room.disableCameraTransform = true;
   }

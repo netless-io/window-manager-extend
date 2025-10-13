@@ -223,7 +223,7 @@ export class ExtendBackgroundPlugin extends ExtendPlugin {
   }
 
   private mount(): void {
-    console.log('mount', !!this.mainViewElement);
+    // console.log('mount', !!this.mainViewElement);
     if (this.mainViewElement) {
       this.backgroundElement = document.createElement('div');
       this.backgroundElement.classList.add(this.c('container'));
@@ -248,14 +248,12 @@ export class ExtendBackgroundPlugin extends ExtendPlugin {
       const position = this.mainView.convertToPointOnScreen(centerX, centerY);
       const translate = [originPosition.x - position.x, originPosition.y - position.y];
       const matrix = `matrix(${ratio}, 0, 0, ${ratio}, ${translate[0]}, ${translate[1]})`;
-      console.log('onCameraUpdatedHandler===>backgroundImage', width, height, this.originScale, this.ratioClient, ratio);
       // const matrix = `matrix(1, 0, 0, 1, ${translate[0]}, ${translate[1]})`;
       this.backgroundImage.style.transform = matrix;
     }
   };
 
   private onMainViewRebindHandler = () => {
-    console.log('onMainViewRebindHandler', this.isMounted);
     if (this.isMounted) {
       this.unMount();
     }

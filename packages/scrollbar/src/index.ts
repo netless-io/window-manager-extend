@@ -272,7 +272,7 @@ export class ExtendScrollbarPlugin extends ExtendPlugin {
       this.scrollbarY.style.display = ratio >= 1 ? 'none' : 'block';
       this.scrollbarY.style.transform = `translateY(${scrollY}px)`;
     }
-    this.options.scrollbarEventCallback?.onScrollCameraUpdated?.(originScale * this.ratioClient, scale);
+    this.options.scrollbarEventCallback?.onScrollCameraUpdated?.(this.originScale, scale);
   }, 50);
 
   get originBound() {
