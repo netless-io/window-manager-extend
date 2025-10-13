@@ -6,8 +6,6 @@ import './style.scss';
 
 export type ExtendBackgroundImage = {
   url: string;
-  width: number;
-  height: number;
   crossOrigin?: string;
 }
 
@@ -24,19 +22,35 @@ export type ExtendBackgroundOptions = {
    * 背景图片
    */
   image?: ExtendBackgroundImage;
+  /**
+   * 背景view原始尺寸
+   */
+  originBound?: {
+    width: number;
+    height: number;
+    scale: number;
+  };
 }
 
 export class ExtendBackgroundPlugin extends ExtendPlugin {
   readonly kind = 'extend-background';
   private readonly namespace: string = 'window-manager-background-extend-ui';
-  private options: ExtendBackgroundOptions = {};
+  private options: ExtendBackgroundOptions;
   private backgroundElement: HTMLDivElement | null = null;
   private backgroundImage: HTMLImageElement | null = null;
   private isMounted: boolean = false;
   private isCreated: boolean = false;
   private stateDisposer: (() => void) | null = null;
-  constructor() {
+  constructor(options?: ExtendBackgroundOptions) {
     super();
+    this.options = {
+      originBound: {
+        width: 0,
+        height: 0,
+        scale: 1,
+      },
+      ...options,
+    };
   }
 
   private c(className: string): string {
@@ -69,6 +83,32 @@ export class ExtendBackgroundPlugin extends ExtendPlugin {
 
   get attributes() {
     return this.windowManager.attributes;
+  }
+
+
+  get originBound() {
+    return this.options.originBound || { width: 0, height: 0, scale: 1 };
+  }
+
+  get ratioClient() {
+    const { width: originWidth } = this.originBound;
+    return Math.round(this.mainView.size.width / originWidth * 1000) / 1000;
+  }
+
+  get originScale() {
+    const { scale } = this.originBound;
+    return scale  * this.ratioClient;
+  }
+
+  get scale(){
+    return this.mainView.camera.scale;
+  }
+
+  setOriginBound(bound: { width: number, height: number, scale: number }){
+    if (!this.isWritable) {
+      throw new Error('[ExtendBackgroundPlugin] setBackgroundImage must be called in writable room');
+    }
+    this.windowManager.safeUpdateAttributes(['backgroundOptions', 'originBound'], bound);
   }
 
   setBackgroundImage(image?: ExtendBackgroundImage){
@@ -134,8 +174,13 @@ export class ExtendBackgroundPlugin extends ExtendPlugin {
     if(!this.backgroundElement) {
       return;
     }
+    if (!this.options.originBound) {
+      this.backgroundImage?.remove();
+      this.backgroundImage = null;
+      return;
+    }
     if (image) {
-      const { url, width, height, crossOrigin } = image;
+      const { url, crossOrigin } = image;
       if (!this.backgroundImage) {
         this.backgroundImage = new Image();
         this.backgroundImage.classList.add(this.c('image'));
@@ -145,8 +190,6 @@ export class ExtendBackgroundPlugin extends ExtendPlugin {
         this.backgroundElement.appendChild(this.backgroundImage);
         this.mainView.callbacks.on('onCameraUpdated', this.onCameraUpdatedHandler);
       }
-      this.backgroundImage.width = width;
-      this.backgroundImage.height = height;
       if (crossOrigin) {
         this.backgroundImage.crossOrigin = crossOrigin.toString();
       }
@@ -195,13 +238,18 @@ export class ExtendBackgroundPlugin extends ExtendPlugin {
   }
 
   private onCameraUpdatedHandler = () => {
-    if (this.backgroundImage) {
-      const { centerX, centerY } = this.mainView.camera;
+    if (this.backgroundImage && this.options.image) {
+      const { scale, centerX, centerY } = this.mainView.camera;
+      const { width, height } = this.options.originBound || { width: 0, height: 0, scale: 1 };
+      this.backgroundImage.width = width * this.originScale;
+      this.backgroundImage.height = height * this.originScale;
+      const ratio = scale / this.originScale;
       const originPosition = this.mainView.convertToPointOnScreen(0, 0);
       const position = this.mainView.convertToPointOnScreen(centerX, centerY);
       const translate = [originPosition.x - position.x, originPosition.y - position.y];
-      // const matrix = `matrix(${scale}, 0, 0, ${scale}, ${translate[0]}, ${translate[1]})`;
-      const matrix = `matrix(1, 0, 0, 1, ${translate[0]}, ${translate[1]})`;
+      const matrix = `matrix(${ratio}, 0, 0, ${ratio}, ${translate[0]}, ${translate[1]})`;
+      console.log('onCameraUpdatedHandler===>backgroundImage', width, height, this.originScale, this.ratioClient, ratio);
+      // const matrix = `matrix(1, 0, 0, 1, ${translate[0]}, ${translate[1]})`;
       this.backgroundImage.style.transform = matrix;
     }
   };
@@ -226,6 +274,11 @@ export class ExtendBackgroundPlugin extends ExtendPlugin {
       }
       if (!isEqual(options.image, this.options.image)) {
         this.renderBackgroundImage(options.image);
+      }
+      if (!isEqual(options.originBound, this.options.originBound)) {
+        this.renderBackgroundImage(options.image);
+        this.renderOpacityBackground(options.opacity);
+        this.renderColorBackground(options.color);
       }
       this.options = options;
     });
