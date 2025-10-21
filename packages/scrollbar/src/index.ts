@@ -134,7 +134,7 @@ export class ExtendScrollbarPlugin extends ExtendPlugin {
     const size = this.mainView.size;
     const width = size.width / camera.scale;
     const { width: originWidth, scale: originScale } = this.options.originBound || { width, scale: 1 };
-    const ratio = Math.round(width / (originWidth / originScale) * 1000) / 1000;
+    const ratio = Math.round(width / (originWidth / originScale) * 100) / 100;
     const scrollWidth = originWidth * (1-ratio);
     const minX = -scrollWidth / 2;
     const maxX = scrollWidth / 2;
@@ -145,7 +145,7 @@ export class ExtendScrollbarPlugin extends ExtendPlugin {
     const size = this.mainView.size;
     const height = size.height / camera.scale;
     const { height: originHeight, scale: originScale } = this.options.originBound || { height,  scale: 1 };
-    const ratio = Math.round(height / (originHeight / originScale) * 1000) / 1000;
+    const ratio = Math.round(height / (originHeight / originScale) * 100) / 100;
     const scrollHeight = originHeight * (1-ratio);
     const minY = -scrollHeight / 2;
     const maxY = scrollHeight / 2;
@@ -257,7 +257,7 @@ export class ExtendScrollbarPlugin extends ExtendPlugin {
     const width = this.mainView.size.width / scale;
     const height = this.mainView.size.height / scale;
     const { width: originWidth, scale: originScale } = this.options.originBound || { width, height, scale: 1 };
-    const ratio = Math.round(width / (originWidth / originScale) * 1000) / 1000;
+    const ratio = Math.round(width / (originWidth / originScale) * 100) / 100;
 
     const scrollX = Math.round(centerX * this.ratioClient);
     const scrollY = Math.round(centerY * this.ratioClient);
@@ -281,7 +281,7 @@ export class ExtendScrollbarPlugin extends ExtendPlugin {
 
   get ratioClient() {
     const { width: originWidth } = this.originBound;
-    return Math.round(this.mainView.size.width / originWidth * 1000) / 1000;
+    return Math.round(this.mainView.size.width / originWidth * 100) / 100;
   }
 
   get originScale() {
