@@ -130,7 +130,6 @@ export class ExtendPastePlugin extends ExtendPlugin {
   }
 
   private handlePaste = (e: ClipboardEvent) => {
-    // console.log('handlePaste===>', e);
     if (!this.isWritable) {
       return;
     }
@@ -316,15 +315,15 @@ export class ExtendPastePlugin extends ExtendPlugin {
     if (!focuedView) {
       return;
     }
-    const { url, width, height, crossOrigin } = result;
+    const { url, width, height, crossOrigin, centerX, centerY, uuid, locked } = result;
     const camera = focuedView.camera;
     this.windowManager.insertImage({
-      uuid: genUID(),
-      centerX: camera.centerX || 0,
-      centerY: camera.centerY || 0,
+      uuid: uuid || genUID(),
+      centerX: centerX || camera.centerX,
+      centerY: centerY || camera.centerY,
       width,
       height,
-      locked: false,
+      locked: locked || false,
       src: url,
       crossOrigin,
     });

@@ -19,7 +19,7 @@ import { ExtendBackgroundPlugin } from '@netless/window-manager-background-exten
 import { ExtendScrollbarPlugin } from '@netless/window-manager-scrollbar-extend';
 import { install } from "@netless/app-presentation"
 import { useEffect } from 'react';
-import { uploadFile } from './server-api/uploadfile';
+import { getFileType, uploadFile } from './server-api/uploadfile';
 import { getImageSize } from './utils';
 import { Region } from './region';
 const fullWorkerBlob = new Blob([fullWorkerString], { type: 'text/javascript' });
@@ -126,83 +126,131 @@ async function createFastboardUI(params: {
         fullWorkerUrl,
         subWorkerUrl,
       },
-      syncOpt: {
-        interval: 200,
-      },
-      bezier: {
-        combineUnitTime: 200,
-        maxDrawCount: 200
+      extras: {
+        useSimple: true,
+        textEditor: {
+          showFloatBar: false,
+          canSelectorSwitch: false,
+          rightBoundBreak: true,
+          // extendFontFaces: [{fontFamily: "Pacifico", src: "https://fonts.gstatic.com/s/pacifico/v17/FwZY7-Qmy14u9lezJ-6H6MmBp0u-.woff2"}]
+          extendFontFaces: [
+            {
+              fontFamily: "Noto Sans SC",
+              src: "https://fonts.gstatic.com/s/opensans/v44/memvYaGs126MiZpBA-UvWbX2vVnXBbObj2OVTS-mu0SC55I.woff2",
+            },
+          ],
+          loadFontFacesTimeout: 20000,
+        },
       }
     }
   })
 
   if (fastboard.manager) {
     console.log('fastboard.room.isWritable', fastboard.room.isWritable, fastboard.room.disableCameraTransform);
-    const backgroundPlugin = new ExtendBackgroundPlugin()
-    fastboard.manager.useExtendPlugin(backgroundPlugin)
-    const scrollbarPlugin = new ExtendScrollbarPlugin({
-      readonly: true,
-      scrollbarEventCallback: {
-        onScrollCameraUpdated: (originScale, scale) => {
-          console.log('onScrollCameraUpdated', originScale, scale);
+    const pastePlugin = new ExtendPastePlugin({
+      useDrop: true,
+      maxConvertFiles: 3,
+      container: document.body,
+      convertFile: async (file) => {
+        const fileType = getFileType(file);
+        if (fileType.type !== 'image') {
+          return null;
+        }
+        const result = await uploadFile(file, fastboard.room.region as Region);
+        if (!result) {
+          return null;
+        }
+        switch (result.kind) {
+          case 'Image': {
+            const { width, height } = await getImageSize(file);
+            if (result.url) {
+              return {
+                kind: 'Image',
+                url: result.url,
+                width,
+                height,
+                crossOrigin: true,
+                centerX: -100,
+                centerY: -100,
+                uuid: fastboard.room?.calibrationTimestamp?.toString() || Date.now().toString()
+              };
+            }
+            return null;
+          }
+          case 'Error':
+            console.error(`🔄 文件转换失败, error: ${result.error}`);
+            return null;
+          default:
+            return null;
         }
       }
     })
-    fastboard.manager.useExtendPlugin(scrollbarPlugin)
+    fastboard.manager.useExtendPlugin(pastePlugin)
+    // const backgroundPlugin = new ExtendBackgroundPlugin()
+    // fastboard.manager.useExtendPlugin(backgroundPlugin)
+    // const scrollbarPlugin = new ExtendScrollbarPlugin({
+    //   readonly: true,
+    //   scrollbarEventCallback: {
+    //     onScrollCameraUpdated: (originScale, scale) => {
+    //       console.log('onScrollCameraUpdated', originScale, scale);
+    //     }
+    //   }
+    // })
+    // fastboard.manager.useExtendPlugin(scrollbarPlugin)
 
-    fastboard.manager.emitter.on('onMainViewMounted', (view) => {
-      const setOriginBound = () => {
-        let originBound = null;
-        if (sessionStorage.getItem('originBound')) {
-          originBound = JSON.parse(sessionStorage.getItem('originBound') || '{}');
-        } else {
-          const { width, height } = fastboard.manager.mainView.size;
-          originBound = {
-            width,
-            height,
-            scale: 1
-          }
-          sessionStorage.setItem('originBound', JSON.stringify(originBound));
-        }
-        console.log('onMainViewMounted', view.size, originBound, fastboard.manager.mainView.size);
-        backgroundPlugin.setOriginBound(originBound);
-        scrollbarPlugin.setOriginBound({
-          width: originBound.width,
-          height: originBound.height,
-          scale: 1
-        });
-        fastboard.manager.setCameraBound({
-          centerX: 0,
-          centerY: 0,
-          width: originBound.width,
-          height: originBound.height,
-          minContentMode: () => {
-            return 1;
-          },
-          maxContentMode: () => {
-            return 5;
-          }
-        });
-        // 如果需要设置背景图
-        backgroundPlugin.setBackgroundImage({
-          url: "https://h5-static.talk-cloud.net/static/wukong_4.6.2.1/asset/18e47f9235ba112c3f02.png",
-          crossOrigin: 'anonymous'
-        })
-      }
-      // 模拟是老师初始化 则设置背景图片
-      if (fastboard.room.uid.indexOf('1234') > 0) {
-        setOriginBound();
-        scrollbarPlugin.setReadonly(false);
-        // 判断是非是老师第一次进入房间
-        if (!fastboard.manager.attributes.mainViewSize && !fastboard.manager.attributes.mainViewCamera) {
-          fastboard.manager.moveCamera({scale: 1, centerX: 0, centerY: 0})
-        } else {
-          // fastboard.manager.moveCamera({scale: backgroundPlugin.originScale})
-        }
-      }
-      window.backgroundPlugin = backgroundPlugin;
-      window.scrollbarPlugin = scrollbarPlugin;
-    });
+    // fastboard.manager.emitter.on('onMainViewMounted', (view) => {
+    //   const setOriginBound = () => {
+    //     let originBound = null;
+    //     if (sessionStorage.getItem('originBound')) {
+    //       originBound = JSON.parse(sessionStorage.getItem('originBound') || '{}');
+    //     } else {
+    //       const { width, height } = fastboard.manager.mainView.size;
+    //       originBound = {
+    //         width,
+    //         height,
+    //         scale: 1
+    //       }
+    //       sessionStorage.setItem('originBound', JSON.stringify(originBound));
+    //     }
+    //     console.log('onMainViewMounted', view.size, originBound, fastboard.manager.mainView.size);
+    //     backgroundPlugin.setOriginBound(originBound);
+    //     scrollbarPlugin.setOriginBound({
+    //       width: originBound.width,
+    //       height: originBound.height,
+    //       scale: 1
+    //     });
+    //     fastboard.manager.setCameraBound({
+    //       centerX: 0,
+    //       centerY: 0,
+    //       width: originBound.width,
+    //       height: originBound.height,
+    //       minContentMode: () => {
+    //         return 1;
+    //       },
+    //       maxContentMode: () => {
+    //         return 5;
+    //       }
+    //     });
+    //     // 如果需要设置背景图
+    //     backgroundPlugin.setBackgroundImage({
+    //       url: "https://h5-static.talk-cloud.net/static/wukong_4.6.2.1/asset/18e47f9235ba112c3f02.png",
+    //       crossOrigin: 'anonymous'
+    //     })
+    //   }
+    //   // 模拟是老师初始化 则设置背景图片
+    //   if (fastboard.room.uid.indexOf('1234') > 0) {
+    //     setOriginBound();
+    //     scrollbarPlugin.setReadonly(false);
+    //     // 判断是非是老师第一次进入房间
+    //     if (!fastboard.manager.attributes.mainViewSize && !fastboard.manager.attributes.mainViewCamera) {
+    //       fastboard.manager.moveCamera({scale: 1, centerX: 0, centerY: 0})
+    //     } else {
+    //       // fastboard.manager.moveCamera({scale: backgroundPlugin.originScale})
+    //     }
+    //   }
+    //   window.backgroundPlugin = backgroundPlugin;
+    //   window.scrollbarPlugin = scrollbarPlugin;
+    // });
     fastboard.appliancePlugin.disableCameraTransform = true;
     fastboard.room.disableCameraTransform = true;
   }

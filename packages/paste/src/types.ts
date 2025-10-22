@@ -10,6 +10,10 @@ export type PasteImageResult = {
   width: number;
   height: number;
   crossOrigin?: boolean;
+  centerX?: number;
+  centerY?: number;
+  locked?: boolean;
+  uuid?: string;
 }
 
 export type PasteMediaResult = {

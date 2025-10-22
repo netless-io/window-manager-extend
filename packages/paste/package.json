@@ -1,6 +1,6 @@
 {
   "name": "@netless/window-manager-paste-extend",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "",
   "main": "dist/extend-paste.js",
   "module": "dist/extend-paste.esm.js",

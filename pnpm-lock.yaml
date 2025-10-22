@@ -95,16 +95,16 @@ importers:
         version: 0.1.8(jspdf@2.5.1)
       '@netless/app-quill':
         specifier: 0.0.1-fb.4
-        version: 0.0.1-fb.4(@netless/fastboard@1.0.7(@netless/app-in-mainview-plugin@0.0.9(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(white-web-sdk@2.16.53))(@netless/appliance-plugin@1.1.18(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(white-web-sdk@2.16.53))(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(jspdf@2.5.1)(white-web-sdk@2.16.53))
+        version: 0.0.1-fb.4(@netless/fastboard@1.0.7(@netless/app-in-mainview-plugin@0.0.9(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(white-web-sdk@2.16.53))(@netless/appliance-plugin@1.1.22-beta.12(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(white-web-sdk@2.16.53))(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(jspdf@2.5.1)(white-web-sdk@2.16.53))
       '@netless/appliance-plugin':
-        specifier: 1.1.18
-        version: 1.1.18(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(white-web-sdk@2.16.53)
+        specifier: 1.1.22-beta.12
+        version: 1.1.22-beta.12(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(white-web-sdk@2.16.53)
       '@netless/fastboard':
         specifier: ^1.0.7
-        version: 1.0.7(@netless/app-in-mainview-plugin@0.0.9(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(white-web-sdk@2.16.53))(@netless/appliance-plugin@1.1.18(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(white-web-sdk@2.16.53))(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(jspdf@2.5.1)(white-web-sdk@2.16.53)
+        version: 1.0.7(@netless/app-in-mainview-plugin@0.0.9(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(white-web-sdk@2.16.53))(@netless/appliance-plugin@1.1.22-beta.12(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(white-web-sdk@2.16.53))(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(jspdf@2.5.1)(white-web-sdk@2.16.53)
       '@netless/fastboard-react':
         specifier: ^1.0.7
-        version: 1.0.7(@netless/app-in-mainview-plugin@0.0.9(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(white-web-sdk@2.16.53))(@netless/appliance-plugin@1.1.18(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(white-web-sdk@2.16.53))(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(jspdf@2.5.1)(react@17.0.2)(white-web-sdk@2.16.53)
+        version: 1.0.7(@netless/app-in-mainview-plugin@0.0.9(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(white-web-sdk@2.16.53))(@netless/appliance-plugin@1.1.22-beta.12(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(white-web-sdk@2.16.53))(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(jspdf@2.5.1)(react@17.0.2)(white-web-sdk@2.16.53)
       '@netless/window-manager':
         specifier: ^1.0.6
         version: 1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53)
@@ -1059,10 +1059,10 @@ packages:
       jspdf:
         optional: true
 
-  '@netless/appliance-plugin@1.1.18':
-    resolution: {integrity: sha512-MuuBcAJNuL+uOeS6wMduGTYFlE0u55lj+twSW5TKeiY8ThtSP31Rz7xY/xURfTmBUmUK9cBhIqhfAQCWZdDrZA==}
+  '@netless/appliance-plugin@1.1.22-beta.12':
+    resolution: {integrity: sha512-/8p87Eig9Z4JurxnLRPzDeq5M6+Fb8CHZd7N9r7q8HLoz4PEZfM39eIzS+I8NJfJokIeUJn748ZzvuYtqfyIEw==}
     peerDependencies:
-      '@netless/window-manager': '>=1.0'
+      '@netless/window-manager': 1.0.7-beta.8
       white-web-sdk: '>= 2.16.52'
 
   '@netless/canvas-polyfill@0.0.4':
@@ -4083,9 +4083,9 @@ snapshots:
     optionalDependencies:
       jspdf: 2.5.1
 
-  '@netless/app-quill@0.0.1-fb.4(@netless/fastboard@1.0.7(@netless/app-in-mainview-plugin@0.0.9(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(white-web-sdk@2.16.53))(@netless/appliance-plugin@1.1.18(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(white-web-sdk@2.16.53))(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(jspdf@2.5.1)(white-web-sdk@2.16.53))':
+  '@netless/app-quill@0.0.1-fb.4(@netless/fastboard@1.0.7(@netless/app-in-mainview-plugin@0.0.9(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(white-web-sdk@2.16.53))(@netless/appliance-plugin@1.1.22-beta.12(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(white-web-sdk@2.16.53))(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(jspdf@2.5.1)(white-web-sdk@2.16.53))':
     dependencies:
-      '@netless/fastboard': 1.0.7(@netless/app-in-mainview-plugin@0.0.9(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(white-web-sdk@2.16.53))(@netless/appliance-plugin@1.1.18(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(white-web-sdk@2.16.53))(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(jspdf@2.5.1)(white-web-sdk@2.16.53)
+      '@netless/fastboard': 1.0.7(@netless/app-in-mainview-plugin@0.0.9(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(white-web-sdk@2.16.53))(@netless/appliance-plugin@1.1.22-beta.12(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(white-web-sdk@2.16.53))(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(jspdf@2.5.1)(white-web-sdk@2.16.53)
       katex: 0.16.22
       quill: 2.0.3
       quill-cursors: 4.0.4
@@ -4096,7 +4096,7 @@ snapshots:
     optionalDependencies:
       jspdf: 2.5.1
 
-  '@netless/appliance-plugin@1.1.18(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(white-web-sdk@2.16.53)':
+  '@netless/appliance-plugin@1.1.22-beta.12(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(white-web-sdk@2.16.53)':
     dependencies:
       '@netless/window-manager': 1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53)
       clipper-lib: 6.4.2
@@ -4114,20 +4114,20 @@ snapshots:
 
   '@netless/canvas-polyfill@0.0.4': {}
 
-  '@netless/fastboard-core@1.0.7(@netless/app-in-mainview-plugin@0.0.9(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(white-web-sdk@2.16.53))(@netless/appliance-plugin@1.1.18(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(white-web-sdk@2.16.53))(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(jspdf@2.5.1)(white-web-sdk@2.16.53)':
+  '@netless/fastboard-core@1.0.7(@netless/app-in-mainview-plugin@0.0.9(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(white-web-sdk@2.16.53))(@netless/appliance-plugin@1.1.22-beta.12(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(white-web-sdk@2.16.53))(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(jspdf@2.5.1)(white-web-sdk@2.16.53)':
     dependencies:
       '@netless/app-in-mainview-plugin': 0.0.9(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(white-web-sdk@2.16.53)
       '@netless/app-slide': 0.2.76(jspdf@2.5.1)
-      '@netless/appliance-plugin': 1.1.18(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(white-web-sdk@2.16.53)
+      '@netless/appliance-plugin': 1.1.22-beta.12(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(white-web-sdk@2.16.53)
       '@netless/synced-store': 2.0.9(white-web-sdk@2.16.53)
       '@netless/window-manager': 1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53)
       jspdf: 2.5.1
       white-web-sdk: 2.16.53
 
-  '@netless/fastboard-react@1.0.7(@netless/app-in-mainview-plugin@0.0.9(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(white-web-sdk@2.16.53))(@netless/appliance-plugin@1.1.18(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(white-web-sdk@2.16.53))(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(jspdf@2.5.1)(react@17.0.2)(white-web-sdk@2.16.53)':
+  '@netless/fastboard-react@1.0.7(@netless/app-in-mainview-plugin@0.0.9(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(white-web-sdk@2.16.53))(@netless/appliance-plugin@1.1.22-beta.12(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(white-web-sdk@2.16.53))(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(jspdf@2.5.1)(react@17.0.2)(white-web-sdk@2.16.53)':
     dependencies:
-      '@netless/fastboard-core': 1.0.7(@netless/app-in-mainview-plugin@0.0.9(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(white-web-sdk@2.16.53))(@netless/appliance-plugin@1.1.18(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(white-web-sdk@2.16.53))(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(jspdf@2.5.1)(white-web-sdk@2.16.53)
-      '@netless/fastboard-ui': 1.0.7(@netless/fastboard-core@1.0.7(@netless/app-in-mainview-plugin@0.0.9(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(white-web-sdk@2.16.53))(@netless/appliance-plugin@1.1.18(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(white-web-sdk@2.16.53))(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(jspdf@2.5.1)(white-web-sdk@2.16.53))
+      '@netless/fastboard-core': 1.0.7(@netless/app-in-mainview-plugin@0.0.9(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(white-web-sdk@2.16.53))(@netless/appliance-plugin@1.1.22-beta.12(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(white-web-sdk@2.16.53))(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(jspdf@2.5.1)(white-web-sdk@2.16.53)
+      '@netless/fastboard-ui': 1.0.7(@netless/fastboard-core@1.0.7(@netless/app-in-mainview-plugin@0.0.9(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(white-web-sdk@2.16.53))(@netless/appliance-plugin@1.1.22-beta.12(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(white-web-sdk@2.16.53))(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(jspdf@2.5.1)(white-web-sdk@2.16.53))
       react: 17.0.2
     transitivePeerDependencies:
       - '@netless/app-in-mainview-plugin'
@@ -4136,15 +4136,15 @@ snapshots:
       - jspdf
       - white-web-sdk
 
-  '@netless/fastboard-ui@1.0.7(@netless/fastboard-core@1.0.7(@netless/app-in-mainview-plugin@0.0.9(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(white-web-sdk@2.16.53))(@netless/appliance-plugin@1.1.18(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(white-web-sdk@2.16.53))(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(jspdf@2.5.1)(white-web-sdk@2.16.53))':
+  '@netless/fastboard-ui@1.0.7(@netless/fastboard-core@1.0.7(@netless/app-in-mainview-plugin@0.0.9(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(white-web-sdk@2.16.53))(@netless/appliance-plugin@1.1.22-beta.12(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(white-web-sdk@2.16.53))(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(jspdf@2.5.1)(white-web-sdk@2.16.53))':
     dependencies:
-      '@netless/fastboard-core': 1.0.7(@netless/app-in-mainview-plugin@0.0.9(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(white-web-sdk@2.16.53))(@netless/appliance-plugin@1.1.18(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(white-web-sdk@2.16.53))(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(jspdf@2.5.1)(white-web-sdk@2.16.53)
+      '@netless/fastboard-core': 1.0.7(@netless/app-in-mainview-plugin@0.0.9(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(white-web-sdk@2.16.53))(@netless/appliance-plugin@1.1.22-beta.12(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(white-web-sdk@2.16.53))(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(jspdf@2.5.1)(white-web-sdk@2.16.53)
       tippy.js: 6.3.7
 
-  '@netless/fastboard@1.0.7(@netless/app-in-mainview-plugin@0.0.9(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(white-web-sdk@2.16.53))(@netless/appliance-plugin@1.1.18(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(white-web-sdk@2.16.53))(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(jspdf@2.5.1)(white-web-sdk@2.16.53)':
+  '@netless/fastboard@1.0.7(@netless/app-in-mainview-plugin@0.0.9(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(white-web-sdk@2.16.53))(@netless/appliance-plugin@1.1.22-beta.12(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(white-web-sdk@2.16.53))(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(jspdf@2.5.1)(white-web-sdk@2.16.53)':
     dependencies:
-      '@netless/fastboard-core': 1.0.7(@netless/app-in-mainview-plugin@0.0.9(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(white-web-sdk@2.16.53))(@netless/appliance-plugin@1.1.18(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(white-web-sdk@2.16.53))(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(jspdf@2.5.1)(white-web-sdk@2.16.53)
-      '@netless/fastboard-ui': 1.0.7(@netless/fastboard-core@1.0.7(@netless/app-in-mainview-plugin@0.0.9(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(white-web-sdk@2.16.53))(@netless/appliance-plugin@1.1.18(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(white-web-sdk@2.16.53))(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(jspdf@2.5.1)(white-web-sdk@2.16.53))
+      '@netless/fastboard-core': 1.0.7(@netless/app-in-mainview-plugin@0.0.9(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(white-web-sdk@2.16.53))(@netless/appliance-plugin@1.1.22-beta.12(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(white-web-sdk@2.16.53))(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(jspdf@2.5.1)(white-web-sdk@2.16.53)
+      '@netless/fastboard-ui': 1.0.7(@netless/fastboard-core@1.0.7(@netless/app-in-mainview-plugin@0.0.9(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(white-web-sdk@2.16.53))(@netless/appliance-plugin@1.1.22-beta.12(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(white-web-sdk@2.16.53))(@netless/window-manager@1.0.6(jspdf@2.5.1)(white-web-sdk@2.16.53))(jspdf@2.5.1)(white-web-sdk@2.16.53))
     transitivePeerDependencies:
       - '@netless/app-in-mainview-plugin'
       - '@netless/appliance-plugin'
