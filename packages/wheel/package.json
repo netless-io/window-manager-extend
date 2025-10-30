@@ -1,0 +1,47 @@
+{
+  "name": "@netless/window-manager-wheel-extend",
+  "version": "0.0.3",
+  "description": "",
+  "main": "dist/extend-wheel.js",
+  "module": "dist/extend-wheel.esm.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "scripts": {
+    "dev": "onChange 'src/**/*' -- npm run build",
+    "build": "pnpm lint && tsc --project tsconfig.json && node build.mjs",
+    "lint": "eslint src"
+  },
+  "keywords": [],
+  "author": "hqer",
+  "license": "MIT",
+  "dependencies": {
+    "lodash": "^4.17.21"
+  },
+  "devDependencies": {
+    "@netless/window-manager": "^1.0.6",
+    "@types/lodash": "^4.17.4",
+    "white-web-sdk": ">=2.16.53",
+    "@netless/app-presentation": "0.1.9-beta.8",
+    "@netless/app-slide": "0.2.87-beta.0"
+  },
+  "peerDependencies": {
+    "@netless/window-manager": ">=1.0.6",
+    "@netless/app-presentation": ">=0.1.9-beta.8",
+    "@netless/app-slide": ">=0.2.87-beta.0",
+    "white-web-sdk": ">=2.16.53"
+  },
+  "optionalDependencies": {
+    "@netless/window-manager": ">=1.0.6",
+    "@netless/app-presentation": ">=0.1.9-beta.8",
+    "@netless/app-slide": ">=0.2.87-beta.0",
+    "white-web-sdk": ">=2.16.53"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "package.json"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
+}

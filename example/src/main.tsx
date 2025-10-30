@@ -14,20 +14,58 @@ import fullWorkerString from '@netless/appliance-plugin/dist/fullWorker.js?raw';
 import subWorkerString from '@netless/appliance-plugin/dist/subWorker.js?raw';
 import { createFastboard, createUI, apps, register } from '@netless/fastboard';
 import { Fastboard, useFastboard } from '@netless/fastboard-react';
-import { ExtendPastePlugin } from '@netless/window-manager-paste-extend';
-import { ExtendBackgroundPlugin } from '@netless/window-manager-background-extend';
-import { ExtendScrollbarPlugin } from '@netless/window-manager-scrollbar-extend';
+// import { ExtendPastePlugin } from '@netless/window-manager-paste-extend';
+// import { ExtendBackgroundPlugin } from '@netless/window-manager-background-extend';
+// import { ExtendScrollbarPlugin } from '@netless/window-manager-scrollbar-extend';
+import { ExtendWheelPlugin } from '@netless/window-manager-wheel-extend';
 import { install } from "@netless/app-presentation"
 import { useEffect } from 'react';
-import { getFileType, uploadFile } from './server-api/uploadfile';
-import { getImageSize } from './utils';
-import { Region } from './region';
+// import { getFileType, uploadFile } from './server-api/uploadfile';
+// import { getImageSize } from './utils';
+// import { Region } from './region';
 const fullWorkerBlob = new Blob([fullWorkerString], { type: 'text/javascript' });
 const fullWorkerUrl = URL.createObjectURL(fullWorkerBlob);
 const subWorkerBlob = new Blob([subWorkerString], { type: 'text/javascript' });
 const subWorkerUrl = URL.createObjectURL(subWorkerBlob);
 
-install(register, { as: 'DocsViewer' });
+install(register, { as: 'DocsViewer', appOptions: {
+  useScrollbar: true,
+  debounceSync: true,
+  maxCameraScale: 5,
+  useClipView: true,
+}});
+
+apps.push({
+  icon: "https://api.iconify.design/mdi:file-word-box.svg?color=%237f7f7f",
+  kind: "DocsViewer",
+  label: "Docs",
+  onClick: (app) => {
+    app.insertDocs({
+      fileType: "pdf",
+      scenePath: `/pdf/18140800fe8a11eb8cb787b1c376634e`,
+      title: "a.pdf",
+      scenes: [
+        {
+          name: "a.pdf - 第 1 页",
+          ppt: {
+            height: 1010,
+            src: "https://convertcdn.netless.link/staticConvert/18140800fe8a11eb8cb787b1c376634e/1.png",
+            width: 714,
+          },
+        },
+        {
+          name: "a.pdf - 第 2 页",
+          ppt: {
+            height: 1010,
+            src: "https://convertcdn.netless.link/staticConvert/18140800fe8a11eb8cb787b1c376634e/2.png",
+            width: 714,
+          },
+        },
+      ],
+    });
+  },
+});
+
 register({
   kind: "PDFjs",
   src: "https://cdn.jsdelivr.net/npm/@netless/app-pdfjs@0.1.6",
@@ -42,6 +80,20 @@ register({
 register({
   kind: 'Quill',
   src: () => import("@netless/app-quill")
+})
+
+register({
+  kind: 'Slide',
+  src: () => import("@netless/app-slide"),
+  appOptions: {
+    minFPS:10,
+    maxFPS:20,
+    resolution: 1,
+    maxResolutionLevel: 2,
+    skipActionWhenFrozen: true,
+    antialias: false,
+    enableScale: true,
+  }
 })
 
 apps.delete(app => app.kind === "Monaco");
@@ -147,45 +199,45 @@ async function createFastboardUI(params: {
 
   if (fastboard.manager) {
     console.log('fastboard.room.isWritable', fastboard.room.isWritable, fastboard.room.disableCameraTransform);
-    const pastePlugin = new ExtendPastePlugin({
-      useDrop: true,
-      maxConvertFiles: 3,
-      container: document.body,
-      convertFile: async (file) => {
-        const fileType = getFileType(file);
-        if (fileType.type !== 'image') {
-          return null;
-        }
-        const result = await uploadFile(file, fastboard.room.region as Region);
-        if (!result) {
-          return null;
-        }
-        switch (result.kind) {
-          case 'Image': {
-            const { width, height } = await getImageSize(file);
-            if (result.url) {
-              return {
-                kind: 'Image',
-                url: result.url,
-                width,
-                height,
-                crossOrigin: true,
-                centerX: -100,
-                centerY: -100,
-                uuid: fastboard.room?.calibrationTimestamp?.toString() || Date.now().toString()
-              };
-            }
-            return null;
-          }
-          case 'Error':
-            console.error(`🔄 文件转换失败, error: ${result.error}`);
-            return null;
-          default:
-            return null;
-        }
-      }
-    })
-    fastboard.manager.useExtendPlugin(pastePlugin)
+    // const pastePlugin = new ExtendPastePlugin({
+    //   useDrop: true,
+    //   maxConvertFiles: 3,
+    //   container: document.body,
+    //   convertFile: async (file) => {
+    //     const fileType = getFileType(file);
+    //     if (fileType.type !== 'image') {
+    //       return null;
+    //     }
+    //     const result = await uploadFile(file, fastboard.room.region as Region);
+    //     if (!result) {
+    //       return null;
+    //     }
+    //     switch (result.kind) {
+    //       case 'Image': {
+    //         const { width, height } = await getImageSize(file);
+    //         if (result.url) {
+    //           return {
+    //             kind: 'Image',
+    //             url: result.url,
+    //             width,
+    //             height,
+    //             crossOrigin: true,
+    //             centerX: -100,
+    //             centerY: -100,
+    //             uuid: fastboard.room?.calibrationTimestamp?.toString() || Date.now().toString()
+    //           };
+    //         }
+    //         return null;
+    //       }
+    //       case 'Error':
+    //         console.error(`🔄 文件转换失败, error: ${result.error}`);
+    //         return null;
+    //       default:
+    //         return null;
+    //     }
+    //   }
+    // })
+    // fastboard.manager.useExtendPlugin(pastePlugin)
     // const backgroundPlugin = new ExtendBackgroundPlugin()
     // fastboard.manager.useExtendPlugin(backgroundPlugin)
     // const scrollbarPlugin = new ExtendScrollbarPlugin({
@@ -251,6 +303,11 @@ async function createFastboardUI(params: {
     //   window.backgroundPlugin = backgroundPlugin;
     //   window.scrollbarPlugin = scrollbarPlugin;
     // });
+    const wheelPlugin = new ExtendWheelPlugin({
+      activeKinds: ['Presentation', 'DocsViewer', 'Slide'],
+      container: document.body,
+    });
+    fastboard.manager.useExtendPlugin(wheelPlugin);
     fastboard.appliancePlugin.disableCameraTransform = true;
     fastboard.room.disableCameraTransform = true;
   }
@@ -325,90 +382,95 @@ const FastboardReact = (props: { data: any }) => {
   if (!fastboard) {
     return null;
   }
-  if (fastboard.manager) {
-    const pastePlugin = new ExtendPastePlugin({
-      useDrop: true,
-      maxConvertFiles: 3,
-      // language: 'zh-CN',
-      convertFile: async (file) => {
-        const result = await uploadFile(file, fastboard.room.region as Region);
-        switch (result.kind) {
-          case 'Image': {
-            const { width, height } = await getImageSize(file);
-            if (result.url) {
-              return {
-                kind: 'Image',
-                url: result.url,
-                width,
-                height,
-                crossOrigin: true
-              };
-            }
-            return null;
-          }
-          case 'MediaPlayer': {
-            if (result.url) {
-              return {
-                kind: 'MediaPlayer',
-                title: file.name,
-                url: result.url,
-              };
-            }
-            return null;
-          }
-          case 'Slide': {
-            if (result.convertedUrl && result.taskId) {
-              return {
-                kind: 'Slide',
-                title: file.name,
-                url: result.convertedUrl,
-                taskId: result.taskId,
-                scenePath: `/pptx/${result.taskId}`
-              };
-            }
-            return null;
-          }
-          case 'DocsViewer': {
-            if (result.convertedUrl && result.taskId && result.images) {
-              const scenes = Object.entries(result.images).map(([name, value]) => ({
-                name: name,
-                ppt: {
-                  src: value.url,
-                  width: value.width,
-                  height: value.height
-                }
-              }));
-              return {
-                kind: 'DocsViewer',
-                title: file.name,
-                taskId: result.taskId,
-                scenePath: `/docs/${result.taskId}`,
-                scenes
-              };
-            }
-            return null;
-          }
-          case 'PDFjs': {
-            if (result.convertedUrl && result.taskId) {
-              return {
-                kind: 'PDFjs',
-                title: file.name,
-                prefix: result.convertedUrl,
-                taskId: result.taskId,
-                scenePath: `/pdf/${result.taskId}`
-              };
-            }
-            return null;
-          }
-          case 'Error':
-            console.error(`🔄 文件转换失败, error: ${result.error}`);
-            return null;
-          default:
-            return null;
-        }
-      }
+  const manager = fastboard.manager;
+  if (manager) {
+    const wheelPlugin = new ExtendWheelPlugin({
+      activeKinds: ['Presentation', 'DocsViewer', 'Slide']
     });
-    fastboard.manager.useExtendPlugin(pastePlugin);
+    manager.useExtendPlugin(wheelPlugin);
+    // const pastePlugin = new ExtendPastePlugin({
+    //   useDrop: true,
+    //   maxConvertFiles: 3,
+    //   // language: 'zh-CN',
+    //   convertFile: async (file) => {
+    //     const result = await uploadFile(file, fastboard.room.region as Region);
+    //     switch (result.kind) {
+    //       case 'Image': {
+    //         const { width, height } = await getImageSize(file);
+    //         if (result.url) {
+    //           return {
+    //             kind: 'Image',
+    //             url: result.url,
+    //             width,
+    //             height,
+    //             crossOrigin: true
+    //           };
+    //         }
+    //         return null;
+    //       }
+    //       case 'MediaPlayer': {
+    //         if (result.url) {
+    //           return {
+    //             kind: 'MediaPlayer',
+    //             title: file.name,
+    //             url: result.url,
+    //           };
+    //         }
+    //         return null;
+    //       }
+    //       case 'Slide': {
+    //         if (result.convertedUrl && result.taskId) {
+    //           return {
+    //             kind: 'Slide',
+    //             title: file.name,
+    //             url: result.convertedUrl,
+    //             taskId: result.taskId,
+    //             scenePath: `/pptx/${result.taskId}`
+    //           };
+    //         }
+    //         return null;
+    //       }
+    //       case 'DocsViewer': {
+    //         if (result.convertedUrl && result.taskId && result.images) {
+    //           const scenes = Object.entries(result.images).map(([name, value]) => ({
+    //             name: name,
+    //             ppt: {
+    //               src: value.url,
+    //               width: value.width,
+    //               height: value.height
+    //             }
+    //           }));
+    //           return {
+    //             kind: 'DocsViewer',
+    //             title: file.name,
+    //             taskId: result.taskId,
+    //             scenePath: `/docs/${result.taskId}`,
+    //             scenes
+    //           };
+    //         }
+    //         return null;
+    //       }
+    //       case 'PDFjs': {
+    //         if (result.convertedUrl && result.taskId) {
+    //           return {
+    //             kind: 'PDFjs',
+    //             title: file.name,
+    //             prefix: result.convertedUrl,
+    //             taskId: result.taskId,
+    //             scenePath: `/pdf/${result.taskId}`
+    //           };
+    //         }
+    //         return null;
+    //       }
+    //       case 'Error':
+    //         console.error(`🔄 文件转换失败, error: ${result.error}`);
+    //         return null;
+    //       default:
+    //         return null;
+    //     }
+    //   }
+    // });
+    // fastboard.manager.useExtendPlugin(pastePlugin);
   }
   // ui.update({ theme: 'dark' });
   window.fastboard = fastboard;
