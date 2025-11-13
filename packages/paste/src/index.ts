@@ -390,7 +390,6 @@ export class ExtendPastePlugin extends ExtendPlugin {
       });
     }
     if (this.container) {
-      // console.log('mount===>', this.container);
       this.container.addEventListener('paste', this.handlePaste, false);
       if (this.useDrop) {
         // 防止浏览器默认行为

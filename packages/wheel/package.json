@@ -1,6 +1,6 @@
 {
   "name": "@netless/window-manager-wheel-extend",
-  "version": "0.0.3",
+  "version": "0.0.5",
   "description": "",
   "main": "dist/extend-wheel.js",
   "module": "dist/extend-wheel.esm.js",

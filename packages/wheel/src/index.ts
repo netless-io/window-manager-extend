@@ -5,6 +5,19 @@ export type ExtendWheelOptions = {
   readonly?: boolean;
   activeKinds: string[];
   container?: HTMLElement;
+  originMainViewBound?: {
+    width: number;
+    height: number;
+    scale: number;
+  };
+  /**
+   * 中断器
+   * @param e 滚动事件
+   * @returns 是否中断
+   * 如果返回 true，则阻止白板的滚动
+   * 如果返回 false，则进行白板的滚动
+   */
+  interrupter?: (e: WheelEvent) => boolean;
 }
 
 export class ExtendWheelPlugin extends ExtendPlugin {
@@ -73,6 +86,20 @@ export class ExtendWheelPlugin extends ExtendPlugin {
     this.unMount();
     this.mount();
   }
+
+  setOriginMainViewBound(bound: { width: number, height: number, scale: number }){
+    this.options.originMainViewBound = bound;
+  }
+  
+  /**
+   * 设置中断器
+   * @param interrupter 中断器, 如果设置为 undefined，则进行白板的滚动
+   * 如果返回 true，则阻止白板的滚动
+   * 如果返回 false，则进行白板的滚动
+   */
+  setInterrupter(interrupter?: (e: WheelEvent) => boolean){
+    this.options.interrupter = interrupter;
+  }
   
   protected _inject(context: ExtendContext): void {
     super._inject(context);
@@ -85,7 +112,30 @@ export class ExtendWheelPlugin extends ExtendPlugin {
     this.mount();
   }
 
+  private getScrollYRange(camera: {scale: number}) {
+    const height = this.mainView.size.height / camera.scale;
+    const { height: originHeight, scale: originScale } = this.options.originMainViewBound || { height,  scale: 1 };
+    const ratio = Math.round(height / (originHeight / originScale) * 100) / 100;
+    const scrollHeight = originHeight * (1-ratio);
+    const minY = -scrollHeight / 2;
+    const maxY = scrollHeight / 2;
+    return { minY, maxY };
+  }
+
+  private getScrollXRange(camera: {scale: number}) {
+    const width = this.mainView.size.width / camera.scale;
+    const { width: originWidth, scale: originScale } = this.options.originMainViewBound || { width,  scale: 1 };
+    const ratio = Math.round(width / (originWidth / originScale) * 100) / 100;
+    const scrollWidth = originWidth * (1-ratio);
+    const minX = -scrollWidth / 2;
+    const maxX = scrollWidth / 2;
+    return { minX, maxX };
+  }
+
   private onWheelHandler = (e: WheelEvent) => {
+    if (this.options.interrupter && !!this.options.interrupter(e)) {
+      return;
+    }
     if (this.isWritable && !this.options.readonly) {
       if (typeof e.cancelable !== 'boolean' || e.cancelable) {
         e.preventDefault();
@@ -114,10 +164,25 @@ export class ExtendWheelPlugin extends ExtendPlugin {
             return;
           }
         }
+        return;
       }
       const camera = this.mainView.camera;
-      const centerY = camera.centerY + dy;
-      const centerX = camera.centerX + dx;
+      let centerY = camera.centerY + dy;
+      let centerX = camera.centerX + dx;
+      if (this.options.originMainViewBound) {
+        const { minY, maxY } = this.getScrollYRange(camera);
+        if (centerY < minY) {
+          centerY = minY;
+        } else if (centerY > maxY) {
+          centerY = maxY;
+        }
+        const { minX, maxX } = this.getScrollXRange(camera);
+        if (centerX < minX) {
+          centerX = minX;
+        } else if (centerX > maxX) {
+          centerX = maxX;
+        }
+      }
       this.windowManager.moveCamera({
         centerY,
         centerX,

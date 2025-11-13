@@ -12,14 +12,15 @@ import {
 import IndexPage from '.';
 import fullWorkerString from '@netless/appliance-plugin/dist/fullWorker.js?raw';
 import subWorkerString from '@netless/appliance-plugin/dist/subWorker.js?raw';
-import { createFastboard, createUI, apps, register } from '@netless/fastboard';
+import { createFastboard, createUI, apps, register, RoomState } from '@netless/fastboard';
 import { Fastboard, useFastboard } from '@netless/fastboard-react';
 // import { ExtendPastePlugin } from '@netless/window-manager-paste-extend';
 // import { ExtendBackgroundPlugin } from '@netless/window-manager-background-extend';
 // import { ExtendScrollbarPlugin } from '@netless/window-manager-scrollbar-extend';
-import { ExtendWheelPlugin } from '@netless/window-manager-wheel-extend';
+// import { ExtendWheelPlugin } from '@netless/window-manager-wheel-extend';
 import { install } from "@netless/app-presentation"
 import { useEffect } from 'react';
+import { ExtendMathsKitPlugin } from '@netless/window-manager-maths-kit-extend';
 // import { getFileType, uploadFile } from './server-api/uploadfile';
 // import { getImageSize } from './utils';
 // import { Region } from './region';
@@ -158,14 +159,6 @@ async function createFastboardUI(params: {
       userPayload: {
         nickName: `nick-${uid}`,
       },
-      // hotKeys:{
-      //   'paste': {
-      //     key: 'v',
-      //     ctrlKey: true,
-      //     shiftKey: false,
-      //     altKey: false,
-      //   }
-      // },
       useNativeClipboard: true,
     },
     managerConfig: {
@@ -184,7 +177,6 @@ async function createFastboardUI(params: {
           showFloatBar: false,
           canSelectorSwitch: false,
           rightBoundBreak: true,
-          // extendFontFaces: [{fontFamily: "Pacifico", src: "https://fonts.gstatic.com/s/pacifico/v17/FwZY7-Qmy14u9lezJ-6H6MmBp0u-.woff2"}]
           extendFontFaces: [
             {
               fontFamily: "Noto Sans SC",
@@ -196,9 +188,61 @@ async function createFastboardUI(params: {
       }
     }
   })
-
+  const ui = createUI(fastboard, elm);
   if (fastboard.manager) {
     console.log('fastboard.room.isWritable', fastboard.room.isWritable, fastboard.room.disableCameraTransform);
+    const { width, height } = fastboard.manager.mainView.size;
+    // const { scale } = fastboard.manager.mainView.camera;
+    const mathsKitPlugin = new ExtendMathsKitPlugin({
+      readonly: true,
+      bindMainView: true,
+      bindAppViews: true,
+    });
+    fastboard.manager.useExtendPlugin(mathsKitPlugin);
+    mathsKitPlugin.setReadonly(false);
+    window.mathsKitPlugin = mathsKitPlugin;
+    // 初始化滚动条插件
+    // const scrollbarPlugin = new ExtendScrollbarPlugin({
+    //   readonly: true,
+    //   scrollbarEventCallback: {
+    //     onScrollCameraUpdated: (originScale, scale) => {
+    //       console.log('onScrollCameraUpdated=====>', originScale, scale);
+    //     }
+    //   },
+    // })
+    // fastboard.manager.useExtendPlugin(scrollbarPlugin);
+    // 初始化滚轮插件
+    // const wheelPlugin = new ExtendWheelPlugin({
+    //   readonly: true,
+    //   activeKinds: ['Presentation', 'DocsViewer', 'Slide'],
+    //   container: document.body,
+    // });
+    // fastboard.manager.useExtendPlugin(wheelPlugin);
+    
+
+    //如果是老师(初始化)
+    fastboard.manager.mainView.setCameraBound({
+      centerX: 0,
+      centerY: 0,
+      width,
+      height,
+      damping:1
+    })
+    // scrollbarPlugin.setOriginBound({
+    //   width,
+    //   height,
+    //   scale,
+    // });
+    // wheelPlugin.setOriginMainViewBound({
+    //   width,
+    //   height,
+    //   scale,
+    // });
+    // 如果有操作权限
+    // scrollbarPlugin.setReadonly(false);
+    // wheelPlugin.setReadonly(false);
+    // end
+
     // const pastePlugin = new ExtendPastePlugin({
     //   useDrop: true,
     //   maxConvertFiles: 3,
@@ -303,15 +347,26 @@ async function createFastboardUI(params: {
     //   window.backgroundPlugin = backgroundPlugin;
     //   window.scrollbarPlugin = scrollbarPlugin;
     // });
-    const wheelPlugin = new ExtendWheelPlugin({
-      activeKinds: ['Presentation', 'DocsViewer', 'Slide'],
-      container: document.body,
-    });
-    fastboard.manager.useExtendPlugin(wheelPlugin);
+    // window.scrollbarPlugin = scrollbarPlugin;
+    // window.wheelPlugin = wheelPlugin;
     fastboard.appliancePlugin.disableCameraTransform = true;
     fastboard.room.disableCameraTransform = true;
   }
-  const ui = createUI(fastboard, elm);
+  if (fastboard.room) {
+    // fastboard.room.callbacks.on('onRoomStateChanged', (state: RoomState) => {
+    //   const roomMembers = state.roomMembers;
+    //   const member = roomMembers.find((member: any) => member.memberState.strokeColor == [255,255,255]);
+    //   if (member) {
+    //     const uid = member.payload.uid;
+    //     // cssText style 设置 uid 的样式
+    //     const style = document.createElement('style');
+    //     style.textContent = `.netless-window-manager-cursor-name[data-cursor-uid="${uid}"] .netless-window-manager-cursor-inner  {
+    //       color: #000 !important;
+    //     }`;
+    //     document.head.appendChild(style);
+    //   }
+    // })
+  }
   // ui.update({ theme: 'dark' });
   window.fastboard = fastboard;
   window.fastboardUI = ui;
@@ -384,10 +439,11 @@ const FastboardReact = (props: { data: any }) => {
   }
   const manager = fastboard.manager;
   if (manager) {
-    const wheelPlugin = new ExtendWheelPlugin({
-      activeKinds: ['Presentation', 'DocsViewer', 'Slide']
-    });
-    manager.useExtendPlugin(wheelPlugin);
+    // const wheelPlugin = new ExtendWheelPlugin({
+    //   activeKinds: ['Presentation', 'DocsViewer', 'Slide']
+    // });
+    // manager.useExtendPlugin(wheelPlugin);
+    // window.wheelPlugin = wheelPlugin;
     // const pastePlugin = new ExtendPastePlugin({
     //   useDrop: true,
     //   maxConvertFiles: 3,

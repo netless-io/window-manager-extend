@@ -1,9 +1,9 @@
 {
-  "name": "@netless/window-manager-scrollbar-extend",
-  "version": "0.0.4",
+  "name": "@netless/window-manager-maths-kit-extend",
+  "version": "0.0.1",
   "description": "",
-  "main": "dist/extend-scrollbar.js",
-  "module": "dist/extend-scrollbar.esm.js",
+  "main": "dist/extend-maths-kit.js",
+  "module": "dist/extend-maths-kit.esm.js",
   "types": "dist/index.d.ts",
   "type": "module",
   "scripts": {
@@ -15,15 +15,19 @@
   "author": "hqer",
   "license": "MIT",
   "dependencies": {
-    "lodash": "^4.17.21"
+    "lodash": "^4.17.21",
+    "@netless/maths-kit": "^0.0.5"
   },
   "devDependencies": {
     "@netless/window-manager": "^1.0.6",
     "@types/lodash": "^4.17.4",
-    "esbuild-inline-sass": "^0.4.4",
     "white-web-sdk": ">=2.16.53"
   },
   "peerDependencies": {
+    "@netless/window-manager": ">=1.0.6",
+    "white-web-sdk": ">=2.16.53"
+  },
+  "optionalDependencies": {
     "@netless/window-manager": ">=1.0.6",
     "white-web-sdk": ">=2.16.53"
   },

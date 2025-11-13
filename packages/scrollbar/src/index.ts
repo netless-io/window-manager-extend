@@ -43,15 +43,7 @@ export class ExtendScrollbarPlugin extends ExtendPlugin {
   private stateDisposer: (() => void) | null = null;
   constructor(options: ExtendScrollbarOptions) {
     super();
-    this.options = {
-      originBound: {
-        width: 0,
-        height: 0,
-        scale: 1,
-      },
-      readonly: false,
-      ...options,
-    };
+    this.options = options;
   }
 
   private c(className: string): string {

@@ -6,6 +6,7 @@ declare global {
       player: any;
       room: any;
       fastboard: any;
+      wheelPlugin: any;
       fastboardUI: any;
       syncedStore: any;
       appliancePlugin: any;
@@ -14,6 +15,7 @@ declare global {
       clipboardData: any;
       backgroundPlugin: any;
       scrollbarPlugin: any;
+      mathsKitPlugin: any;
       getSelection(): Selection;
     }
 }

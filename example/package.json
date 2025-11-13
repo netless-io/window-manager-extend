@@ -22,6 +22,7 @@
     "@netless/window-manager-background-extend": "workspace:*",
     "@netless/window-manager-scrollbar-extend": "workspace:*",
     "@netless/window-manager-wheel-extend": "workspace:*",
+    "@netless/window-manager-maths-kit-extend": "workspace:*",
     "antd": "^5.11.4",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
