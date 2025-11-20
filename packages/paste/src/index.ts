@@ -7,6 +7,9 @@ import { ObserverSet } from './ObserverSet';
 import { UploadingUI } from './componet/UploadingUI';
 import { Language } from './componet/locale';
 
+
+export type PasteState = 'error' | 'cancel' | 'start' | 'end' | 'progress';
+
 export type ExtendPasteOptions = {
   /**
    * 将文件转换为 PasteFileResult, 如果转换失败，则返回null
@@ -32,6 +35,15 @@ export type ExtendPasteOptions = {
    * @returns boolean
    */
   fileFilter?: (file: File) => boolean;
+
+  /**
+   * 中断器
+   * @param hasConvert 是否正还在转换文件中
+   * @returns 是否中断粘贴或拖拽
+   * 如果返回 true，则阻止粘贴或拖拽操作
+   * 如果返回 false，则进行后续逻辑
+   */
+  interrupter?: (hasConvert: boolean) => boolean;
 }
 
 export class ExtendPastePlugin extends ExtendPlugin {
@@ -155,7 +167,14 @@ export class ExtendPastePlugin extends ExtendPlugin {
     if (!items) {
       return;
     }
-    if (this.convertSet.size > 0) {
+    const hasConvert = this.convertSet.size > 0;
+    if(this.options.interrupter){
+      const bol = this.options.interrupter(hasConvert);
+      if (bol) {
+        console.log('paste is interrupted by interrupter');
+        return;
+      }
+    } else if (hasConvert) {
       console.error('convertSet is not empty, wait for transform to complete');
       return;
     }
@@ -346,7 +365,14 @@ export class ExtendPastePlugin extends ExtendPlugin {
     if (!files) {
       return;
     }
-    if (this.convertSet.size > 0) {
+    const hasConvert = this.convertSet.size > 0;
+    if(this.options.interrupter){
+      const bol = this.options.interrupter(hasConvert);
+      if (bol) {
+        console.log('paste is interrupted by interrupter');
+        return;
+      }
+    } else if (hasConvert) {
       console.error('convertSet is not empty, wait for transform to complete');
       return;
     }

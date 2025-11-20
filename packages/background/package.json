@@ -1,6 +1,6 @@
 {
   "name": "@netless/window-manager-background-extend",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "",
   "main": "dist/extend-background.js",
   "module": "dist/extend-background.esm.js",

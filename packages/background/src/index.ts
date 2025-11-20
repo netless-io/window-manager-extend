@@ -1,6 +1,6 @@
 import { ExtendContext, ExtendPlugin, type WindowManager } from '@netless/window-manager';
 import { autorun, toJS } from 'white-web-sdk';
-import { isEqual } from 'lodash';
+import { clone, isEqual, isNumber } from 'lodash';
 import './style.scss';
 
 
@@ -228,9 +228,15 @@ export class ExtendBackgroundPlugin extends ExtendPlugin {
       this.backgroundElement = document.createElement('div');
       this.backgroundElement.classList.add(this.c('container'));
       const { image, color, opacity } = this.options;
-      this.renderBackgroundImage(image);
-      this.renderColorBackground(color);
-      this.renderOpacityBackground(opacity);
+      if (image) {
+        this.renderBackgroundImage(image);
+      }
+      if (color) {
+        this.renderColorBackground(color);
+      }
+      if (isNumber(opacity)) {
+        this.renderOpacityBackground(Number(opacity));
+      }
       this.mainViewElement.appendChild(this.backgroundElement);
       this.observe();
     }
@@ -254,8 +260,13 @@ export class ExtendBackgroundPlugin extends ExtendPlugin {
   };
 
   private onMainViewRebindHandler = () => {
+    let options = null;
     if (this.isMounted) {
+      options = clone(this.options);
       this.unMount();
+    }
+    if (options) {
+      this.options = options;
     }
     this.mount();
   };
@@ -265,15 +276,20 @@ export class ExtendBackgroundPlugin extends ExtendPlugin {
     this.stateDisposer = autorun(() => {
       const options = toJS(this.attributes.backgroundOptions);
       if (options.color !== this.options.color) {
+        this.options.color = options.color;
         this.renderColorBackground(options.color);
       }
       if (options.opacity !== this.options.opacity) {
+        this.options.opacity = options.opacity;
         this.renderOpacityBackground(options.opacity);
       }
-      if (!isEqual(options.image, this.options.image)) {
+      if (!isEqual(options.image, this.options.image) && options.originBound) {
+        this.options.originBound = options.originBound;
+        this.options.image = options.image;
         this.renderBackgroundImage(options.image);
       }
       if (!isEqual(options.originBound, this.options.originBound)) {
+        this.options.originBound = options.originBound;
         this.renderBackgroundImage(options.image);
         this.renderOpacityBackground(options.opacity);
         this.renderColorBackground(options.color);
@@ -296,8 +312,10 @@ export class ExtendBackgroundPlugin extends ExtendPlugin {
   private unMount(){
     if (this.backgroundElement) {
       this.unobserve();
+      this.options = {};
       this.backgroundElement?.remove();
       this.backgroundElement = null;
+      this.backgroundImage = null;
     }
     this.isMounted = false;
   }
