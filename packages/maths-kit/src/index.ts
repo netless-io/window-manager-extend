@@ -114,7 +114,7 @@ export class ExtendMathsKitPlugin extends ExtendPlugin {
     if (this.mainViewMathsKitManager) {
       this.mainViewMathsKitManager.manager.setActive(!bol);
     }
-    this.appViewMathsKitManagers.values().forEach((mathsKitManager) => {
+    Array.from(this.appViewMathsKitManagers.values()).forEach((mathsKitManager) => {
       mathsKitManager.manager.setActive(!bol);
     });
   }
@@ -413,7 +413,7 @@ export class ExtendMathsKitPlugin extends ExtendPlugin {
   };
 
   private onAppsChangeHandler = (apps:string[]) => {
-    this.appViewMathsKitManagers.keys().forEach((appId) => {
+    Array.from(this.appViewMathsKitManagers.keys()).forEach((appId) => {
       if (!apps.includes(appId)) {
         this.destroyAppViewMathsKitManager(appId);
         if(this.isWritable){
@@ -431,7 +431,7 @@ export class ExtendMathsKitPlugin extends ExtendPlugin {
     }
     if(this.options.bindAppViews) {
       if (this.appViewMathsKitManagers.size > 0) {
-        this.appViewMathsKitManagers.keys().forEach((appId) => {
+        Array.from(this.appViewMathsKitManagers.keys()).forEach((appId) => {
           this.destroyAppViewMathsKitManager(appId);
         });
       }

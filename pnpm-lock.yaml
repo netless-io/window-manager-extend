@@ -201,8 +201,8 @@ importers:
   packages/maths-kit:
     dependencies:
       '@netless/maths-kit':
-        specifier: ^0.0.5
-        version: 0.0.5
+        specifier: ^0.0.6
+        version: 0.0.6
       lodash:
         specifier: ^4.17.21
         version: 4.17.21
@@ -1169,8 +1169,8 @@ packages:
   '@netless/fastboard@1.1.1':
     resolution: {integrity: sha512-G+KdaRISakz5IX2zjHsqaoINNY1EnvBgZS45M8UYcTEiUBM12f+RTKi/nqXUTjXlmty7Q23CG78Q6V26xoiDCw==}
 
-  '@netless/maths-kit@0.0.5':
-    resolution: {integrity: sha512-26WC+U1hBDDwXbc2pk8mUwkTurpmjoz/o0IRhSiYCHlBJWbWVYZNzQGkSNtbSF5PPOIihHc11QF62l5rL6P09w==}
+  '@netless/maths-kit@0.0.6':
+    resolution: {integrity: sha512-GkxpBsd5trcVqpbRGiCHn4QSR9XALvjHTVGm/UKctrgxDqp3jCaxkTLBWEQ+U0ms6W2wEUOCy9LpyGVz9uGlUw==}
 
   '@netless/synced-store@2.0.9':
     resolution: {integrity: sha512-0MMEC62SRYEmOrd3OhqfGPp75GX4obiwnIFLDGnaYLz2cRurSoe5xtmhKJwoiIAzL8DSPfchqCmFYyZE0Ptgsw==}
@@ -4328,7 +4328,7 @@ snapshots:
       - jspdf
       - white-web-sdk
 
-  '@netless/maths-kit@0.0.5':
+  '@netless/maths-kit@0.0.6':
     dependencies:
       eventemitter2: 6.4.9
       lodash: 4.17.21

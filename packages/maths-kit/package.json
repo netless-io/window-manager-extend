@@ -1,6 +1,6 @@
 {
   "name": "@netless/window-manager-maths-kit-extend",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "",
   "main": "dist/extend-maths-kit.js",
   "module": "dist/extend-maths-kit.esm.js",
@@ -16,7 +16,7 @@
   "license": "MIT",
   "dependencies": {
     "lodash": "^4.17.21",
-    "@netless/maths-kit": "^0.0.5"
+    "@netless/maths-kit": "^0.0.6"
   },
   "devDependencies": {
     "@netless/window-manager": "^1.0.6",
