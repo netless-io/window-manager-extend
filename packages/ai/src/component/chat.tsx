@@ -807,6 +807,7 @@ export const ChatApp = (props: {
         height: mainView.size.height, 
         locked: true,
       });
+      return;
     }
     if (!_isMarkdown) {
       console.warn('[Chat] 警告: 消息不是 Markdown 格式，无法导出为思维导图');

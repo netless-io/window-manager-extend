@@ -1,6 +1,6 @@
 {
   "name": "@netless/window-manager-ai-extend",
-  "version": "0.0.3",
+  "version": "0.0.5",
   "description": "",
   "main": "dist/extend-ai.js",
   "module": "dist/extend-ai.esm.js",

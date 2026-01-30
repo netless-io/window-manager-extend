@@ -322,7 +322,7 @@ async function createFastboardUI(params: {
     const aiPlugin = new ExtendAIPlugin({
       uploadFile: uploadImage,
       models: ['nvidia/nemotron-nano-12b-v2-vl:free'],
-      apiKey: "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",
+      apiKey: "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",
       callbacks: {
         onShow: () => {
           console.log('onShow');
