@@ -27,10 +27,16 @@
     "onchange": "^7.1.0"
   },
   "devDependencies": {
-    "@netless/window-manager": "1.0.6",
+    "@netless/window-manager": "1.0.10",
     "@typescript-eslint/eslint-plugin": "^7.4.0",
     "@typescript-eslint/parser": "^7.4.0",
     "eslint": "^8.57.0",
     "typescript": "^5.8.3"
+  },
+  "pnpm":{
+    "overrides": {
+      "@netless/window-manager": "1.0.10",
+      "@netless/appliance-plugin": "1.1.30"
+    }
   }
 }

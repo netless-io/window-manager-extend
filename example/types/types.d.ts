@@ -15,7 +15,10 @@ declare global {
       clipboardData: any;
       backgroundPlugin: any;
       scrollbarPlugin: any;
+      aiPlugin: any;
+      markmapPlugin: any;
       mathsKitPlugin: any;
+      fastboardReplayUI: any;
       getSelection(): Selection;
     }
 }

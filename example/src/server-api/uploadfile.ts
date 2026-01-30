@@ -266,91 +266,21 @@ export const queryConvertFileLoop = async (uuid: string, region: Region, taskTok
 
 
 // 主上传函数
-export const uploadFile = async (file: File, region: Region): Promise<UploadResponse> => {
-
+export const uploadImage = async (image: File) => {
   try {
     // 1. 获取OSS签名
     console.log('🔑 获取OSS签名...');
-    const signature = await getOSSSignature(file);
+    const signature = await getOSSSignature(image);
     console.log('✅ OSS签名获取成功');
   
     // 2. 直接上传文件到OSS
     console.log('📤 上传文件到OSS...');
-    const fileUrl = await uploadToOSS(file, signature);
+    const fileUrl = await uploadToOSS(image, signature);
     console.log(`✅ 文件上传成功: ${fileUrl}`);
 
-    // 3. 区分文件类型
-    const fileType = getFileType(file);
-    console.log(`📁 文件类型: ${fileType.category}, 扩展名: ${fileType.extension}`);
-
-    // 图片文件
-    if (fileType.type === 'image') {
-      return {
-        kind: 'Image',
-        url: fileUrl,
-        success: true,
-      };
-    }
-
-    // 媒体文件
-    if (fileType.type === 'media') {
-      return {
-        kind: 'MediaPlayer',
-        url: fileUrl,
-        success: true,
-      };
-    }
-
-    // 需要文件转换
-    if (fileType.type === 'document') {
-      const outputFormat = fileType.category === 'pdf' ? 'qpdf' : 'png';
-      const { uuid, taskToken } = await startConvertFile(fileType, fileUrl, region, outputFormat);
-      console.log(`🔄 开始查询文件转换状态, uuid: ${uuid}, region: ${region}, taskToken: ${taskToken}`);
-      if (!uuid && !taskToken) {
-        throw new Error('文件转换失败, 没有获取到uuid或taskToken');
-      }
-      const result = await new Promise<QueryConvertFileResult>((resolve) => {
-        queryConvertFileLoop(uuid, region, taskToken, resolve);
-      })
-      if (result.status === 'Fail') {
-        return {
-          kind: 'Error',
-          success: false,
-          error: '文件转换失败',
-        }
-      }
-      if (result.type === 'dynamic' && result.prefix) {
-        return {
-          kind: 'Slide',
-          taskId: uuid,
-          convertedUrl: result.prefix,
-          success: true,
-        }
-      }
-      if (result.type === 'static' && result.images) {
-        if (fileType.category === 'pdf') {
-          return {
-            kind: 'PDFjs',
-            taskId: uuid,
-            convertedUrl: result.prefix,
-            success: true,
-          }
-        } else {
-          return {
-            kind: 'DocsViewer',
-            taskId: uuid,
-            convertedUrl: result.prefix,
-            images: result.images,
-            success: true,
-          }
-        }
-      }
-    }
+    return fileUrl;
   } catch (error) {
-    return {
-      kind: 'Error',
-      success: false,
-      error: error instanceof Error ? error.message : '未知错误',
-    };
+    console.error('❌ 上传文件失败:', error);
+    throw error;
   }
 };

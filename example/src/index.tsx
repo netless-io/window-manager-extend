@@ -41,6 +41,14 @@ const IndexPage = ()=>{
                 }} loading ={loading1}>
                     fastboard-react
                 </Button>
+                <Button type="primary" block onClick={()=>{
+                        if (!loading1) {
+                            setLoading1(true);
+                            go('/combinePlayer');
+                        }
+                    }} loading ={loading1}>
+                        combine-player
+                </Button>
 
         </Flex>
     </Flex>

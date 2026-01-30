@@ -1,0 +1,68 @@
+{
+  "name": "@netless/window-manager-ai-extend",
+  "version": "0.0.3",
+  "description": "",
+  "main": "dist/extend-ai.js",
+  "module": "dist/extend-ai.esm.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "scripts": {
+    "dev": "onChange 'src/**/*' -- npm run build",
+    "build": "pnpm lint && tsc --project tsconfig.json && node build.mjs",
+    "lint": "eslint src"
+  },
+  "keywords": [],
+  "author": "hqer",
+  "license": "MIT",
+  "dependencies": {
+    "@ant-design/icons": "^5.5.1",
+    "@openrouter/sdk": "^0.3.10",
+    "antd": "^5.29.2",
+    "d3": "^7.9.0",
+    "lodash": "^4.17.21",
+    "markdown": "^0.5.0",
+    "markmap-common": "^0.18.0",
+    "markmap-lib": "^0.18.0",
+    "markmap-toolbar": "^0.18.0",
+    "markmap-view": "^0.18.0",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
+  },
+  "devDependencies": {
+    "@netless/app-pdfjs": "^0.1.6",
+    "@netless/app-presentation": "^0.1.9",
+    "@netless/app-slide": "^0.2.92",
+    "@netless/window-manager": "^1.0.10",
+    "@types/lodash": "^4.17.4",
+    "@types/react": "^17.0.2",
+    "@types/react-dom": "^17.0.2",
+    "esbuild-inline-sass": "^0.4.4",
+    "white-web-sdk": "^2.16.53",
+    "@netless/appliance-plugin": "^1.1.30"
+  },
+  "peerDependencies": {
+    "@netless/app-pdfjs": ">=0.1.6",
+    "@netless/app-presentation": ">=0.1.9",
+    "@netless/app-slide": ">=0.2.92",
+    "@netless/window-manager": ">=1.0.10",
+    "@netless/appliance-plugin": ">=1.1.30",
+    "white-web-sdk": ">=2.16.53"
+  },
+  "optionalDependencies": {
+    "@netless/app-pdfjs": ">=0.1.6",
+    "@netless/app-presentation": ">=0.1.9",
+    "@netless/app-slide": ">=0.2.92",
+    "@netless/window-manager": ">=1.0.10",
+    "@netless/appliance-plugin": ">=1.1.30",
+    "white-web-sdk": ">=2.16.53"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "README.zh-cn.md",
+    "package.json"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
+}
