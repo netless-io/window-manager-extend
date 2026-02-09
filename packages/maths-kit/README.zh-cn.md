@@ -38,7 +38,7 @@ const mathsKitPlugin = new ExtendMathsKitPlugin({
 });
 
 // 注册到窗口管理器
-fastboard.manager.useExtendPlugin(mathsKitPlugin);
+manager.useExtendPlugin(mathsKitPlugin);
 ```
 
 ### 只读模式
@@ -51,7 +51,7 @@ const mathsKitPlugin = new ExtendMathsKitPlugin({
   bindAppViews: false
 });
 
-fastboard.manager.useExtendPlugin(mathsKitPlugin);
+manager.useExtendPlugin(mathsKitPlugin);
 ```
 
 ### 使用主题
@@ -64,7 +64,7 @@ const mathsKitPlugin = new ExtendMathsKitPlugin({
   theme: 'dark' // 或 'light'
 });
 
-fastboard.manager.useExtendPlugin(mathsKitPlugin);
+manager.useExtendPlugin(mathsKitPlugin);
 ```
 
 ### 绑定应用视图
@@ -76,7 +76,7 @@ const mathsKitPlugin = new ExtendMathsKitPlugin({
   bindAppViews: true // 为所有应用视图启用数学工具
 });
 
-fastboard.manager.useExtendPlugin(mathsKitPlugin);
+manager.useExtendPlugin(mathsKitPlugin);
 ```
 
 ### 动态配置
@@ -88,7 +88,7 @@ const mathsKitPlugin = new ExtendMathsKitPlugin({
   bindAppViews: false
 });
 
-fastboard.manager.useExtendPlugin(mathsKitPlugin);
+manager.useExtendPlugin(mathsKitPlugin);
 
 // 动态设置只读状态
 mathsKitPlugin.setReadonly(false); // 启用数学工具
@@ -212,11 +212,11 @@ if (fastboard.room.isWritable) {
 - **主视图**: 白板主视图（当 `bindMainView: true` 时）
 - **应用视图**: 所有应用视图（当 `bindAppViews: true` 时）
 
-## 系统要求
+## 依赖要求
 
 - `@netless/window-manager`: >=1.0.6
 - `white-web-sdk`: >=2.16.53
-- `@netless/maths-kit`: 0.0.5-beta.3
+- `@netless/maths-kit`: 0.0.6
 
 ## 许可证
 
