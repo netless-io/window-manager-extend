@@ -33,6 +33,8 @@
   },
   "files": [
     "dist",
+    "bridge.js",
+    "bridge.d.ts",
     "README.md",
     "package.json"
   ],

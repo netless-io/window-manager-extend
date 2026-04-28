@@ -15,6 +15,14 @@ const external = Object.keys({
   ...pkg.peerDependencies,
   ...pkg.dependencies,
 });
+const bridgeAliasPlugin = {
+  name: 'bridge-alias',
+  setup(build) {
+    build.onResolve({ filter: /^\.\/external$/ }, () => ({
+      path: join(__dirname, 'src/external.bridge.ts'),
+    }));
+  },
+};
 const settings = {
   entryPoints: [join(__dirname, 'src/index.ts')],
   bundle: true,
@@ -41,6 +49,17 @@ esbuild.build({
 esbuild.build({
   ...settings,
   outfile: join(outDir, 'extend-paste.esm.js'),
+  platform: 'browser',
+  format: 'esm',
+}).then(console.log).catch(console.log);
+
+esbuild.build({
+  ...settings,
+  plugins: [
+    ...settings.plugins,
+    bridgeAliasPlugin,
+  ],
+  outfile: join(outDir, 'extend-paste.bridge.esm.js'),
   platform: 'browser',
   format: 'esm',
 }).then(console.log).catch(console.log);

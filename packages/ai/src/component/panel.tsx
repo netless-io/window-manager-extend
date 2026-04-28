@@ -3,7 +3,8 @@ import { Button, Dropdown, MenuProps, Space, Tabs, ConfigProvider, theme } from 
 import { I18n, I18nKey, Language } from '../locale';
 import { AIPanelController } from '../controller';
 import { Message, TextContent } from '../types';
-import { isArray, isString } from 'lodash';
+import isArray from 'lodash/isArray';
+import isString from 'lodash/isString';
 import { ChatApp } from './chat';
 import { CloseOutlined, EllipsisOutlined } from '@ant-design/icons';
 import { OpenRouter } from '@openrouter/sdk';

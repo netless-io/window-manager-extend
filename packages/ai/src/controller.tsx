@@ -9,7 +9,7 @@ import { Language } from './locale';
 import { ContentPart } from './types';
 import './style.scss';
 import { ObserverMap } from './utils/ObserverMap';
-import { AppliancePluginInstance } from '@netless/appliance-plugin';
+import type { AppliancePluginInstance } from '@netless/appliance-plugin';
 import { AutoSnapshotPlugin } from './utils/autoSnapshot';
 
 export type AIPanelControllerOptions = {

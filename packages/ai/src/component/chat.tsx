@@ -2,7 +2,7 @@ import React, { useContext, useMemo, useState } from 'react';
 import { AiChatRecordItem, PanelContext } from './panel';
 import { AIPanelController } from '../controller';
 import { Select, Flex, Button, Input } from 'antd';
-import { isArray } from 'lodash';
+import isArray from 'lodash/isArray';
 import { DeleteOutlined, SyncOutlined, UpOutlined, DownOutlined, ImportOutlined } from '@ant-design/icons';
 import { Message, TextContent } from '../types';
 import { markdown } from 'markdown';

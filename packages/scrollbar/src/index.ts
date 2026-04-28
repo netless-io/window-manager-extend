@@ -1,8 +1,15 @@
 import { AnimationMode, ExtendContext, ExtendPlugin, type WindowManager } from '@netless/window-manager';
 import './style.scss';
 import { makeDraggable } from './Draggable';
-import { autorun, toJS } from 'white-web-sdk';
 import { debounce, isEqual } from 'lodash';
+import {
+  autorun,
+  bindWhiteWebSdkBridgeRuntime,
+  toJS,
+} from './runtime';
+
+export type { WhiteWebSdkBridgeRuntime } from './runtime';
+export { bindWhiteWebSdkBridgeRuntime };
 
 export interface ScrollbarEventCallback {
   onScrollbarDragStart?: () => void;

@@ -1,7 +1,17 @@
 import { MathsKitManager, MathsKitState, MathsKitType } from '@netless/maths-kit';
-import { ExtendContext, ExtendPlugin, type View, type WindowManager } from '@netless/window-manager';
-import { difference, differenceWith, isEqual } from 'lodash';
-import { autorun, RoomState, toJS } from 'white-web-sdk';
+import type { ExtendContext, View, WindowManager } from '@netless/window-manager';
+import difference from 'lodash/difference';
+import differenceWith from 'lodash/differenceWith';
+import isEqual from 'lodash/isEqual';
+import type { RoomState } from 'white-web-sdk';
+import { ExtendPlugin, autorun, toJS } from './external';
+import { bindWhiteWebSdkBridgeRuntime } from './runtime';
+import { bindWindowManagerBridgeRuntime } from './window-manager-runtime';
+
+export type { WhiteWebSdkBridgeRuntime } from './runtime';
+export { bindWhiteWebSdkBridgeRuntime };
+export type { WindowManagerBridgeRuntime } from './window-manager-runtime';
+export { bindWindowManagerBridgeRuntime };
 
 export type ExtendMathsKitOptions = {
   readonly?: boolean;
@@ -62,6 +72,14 @@ export class ExtendMathsKitPlugin extends ExtendPlugin {
 
   get attributes() {
     return this.windowManager.attributes;
+  }
+
+  private getMathsKitViewData(): ISerializableSyncMathsKitViewData {
+    return (toJS(this.attributes?.mathsKits) || {}) as ISerializableSyncMathsKitViewData;
+  }
+
+  private setMathsKitViewData(nextMathsKits: ISerializableSyncMathsKitViewData | undefined) {
+    this.windowManager.safeSetAttributes({ mathsKits: nextMathsKits });
   }
 
   get localMathsKitViewData() {
@@ -188,27 +206,33 @@ export class ExtendMathsKitPlugin extends ExtendPlugin {
       if (this.options.readonly) {
         return;
       }
+      const mathsKitViewData = this.getMathsKitViewData();
+      const appMathsKitViewData = mathsKitViewData[appId] || {};
       switch (operation) {
         case 'add':
         case 'update': {
-          if (!this.attributes.mathsKits) {
-            this.windowManager.safeUpdateAttributes(['mathsKits'], {
+          if (!this.attributes?.mathsKits || !mathsKitViewData[appId]) {
+            this.setMathsKitViewData({
+              ...mathsKitViewData,
               [appId]: {
+                ...appMathsKitViewData,
                 [key]: value,
               },
             });
-          } else if (!this.attributes.mathsKits[appId]) {
-            this.windowManager.safeUpdateAttributes(['mathsKits', appId], { [key]: value });
           } else {
             this.windowManager.safeUpdateAttributes(['mathsKits', appId, key], value);
           }
           break;
         }
         case 'delete':
-          if (this.attributes.mathsKits && this.attributes.mathsKits[appId] && this.attributes.mathsKits[appId][key]) {
-            const keys = Object.keys(this.attributes.mathsKits[appId]);
+          if (mathsKitViewData[appId] && mathsKitViewData[appId][key]) {
+            const keys = Object.keys(mathsKitViewData[appId]);
             if (keys.length === 1 && keys.includes(key)) {
-              this.windowManager.safeUpdateAttributes(['mathsKits', appId], undefined);
+              const nextMathsKitViewData = { ...mathsKitViewData };
+              delete nextMathsKitViewData[appId];
+              this.setMathsKitViewData(
+                Object.keys(nextMathsKitViewData).length > 0 ? nextMathsKitViewData : undefined,
+              );
             } else {
               this.windowManager.safeUpdateAttributes(['mathsKits', appId, key], undefined);
             }
@@ -248,7 +272,7 @@ export class ExtendMathsKitPlugin extends ExtendPlugin {
     mathsKitManager.on('stateChange', mathsKitManagerItem.stateCallback);
     view.callbacks.on('onCameraUpdated', mathsKitManagerItem.cameraUpdatedCallback);
     this.appViewMathsKitManagers.set(appId, mathsKitManagerItem);
-    const mathsKitViewData =(toJS(this.attributes.mathsKits) || {}) as ISerializableSyncMathsKitViewData;
+    const mathsKitViewData = this.getMathsKitViewData();
     this.syncMathsKitViewData(appId, mathsKitViewData[appId]);
   }
 
@@ -349,7 +373,7 @@ export class ExtendMathsKitPlugin extends ExtendPlugin {
       this.windowManager.emitter.on('onAppViewMounted', this.onAppViewMountedHandler);
     }
     this.stateDisposer = autorun(() => {
-      const mathsKitViewData =(toJS(this.attributes.mathsKits) || {}) as ISerializableSyncMathsKitViewData;
+      const mathsKitViewData = this.getMathsKitViewData();
       if (!isEqual(mathsKitViewData, this.localMathsKitViewData)) {
         const syncKeys = Object.keys(mathsKitViewData);
         const localKeys = Object.keys(this.localMathsKitViewData);
@@ -417,7 +441,14 @@ export class ExtendMathsKitPlugin extends ExtendPlugin {
       if (!apps.includes(appId)) {
         this.destroyAppViewMathsKitManager(appId);
         if(this.isWritable){
-          this.windowManager.updateAttributes(['mathsKits', appId], undefined);
+          const mathsKitViewData = this.getMathsKitViewData();
+          if (mathsKitViewData[appId]) {
+            const nextMathsKitViewData = { ...mathsKitViewData };
+            delete nextMathsKitViewData[appId];
+            this.setMathsKitViewData(
+              Object.keys(nextMathsKitViewData).length > 0 ? nextMathsKitViewData : undefined,
+            );
+          }
         }
       }
     });

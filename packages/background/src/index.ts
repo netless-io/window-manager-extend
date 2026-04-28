@@ -1,7 +1,14 @@
 import { ExtendContext, ExtendPlugin, type WindowManager } from '@netless/window-manager';
-import { autorun, toJS } from 'white-web-sdk';
 import { clone, isEqual, isNumber } from 'lodash';
 import './style.scss';
+import {
+  autorun,
+  bindWhiteWebSdkBridgeRuntime,
+  toJS,
+} from './runtime';
+
+export type { WhiteWebSdkBridgeRuntime } from './runtime';
+export { bindWhiteWebSdkBridgeRuntime };
 
 
 export type ExtendBackgroundImage = {

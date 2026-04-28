@@ -54,6 +54,8 @@
   },
   "files": [
     "dist",
+    "bridge.js",
+    "bridge.d.ts",
     "README.md",
     "README.zh-cn.md",
     "package.json"

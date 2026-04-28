@@ -1,11 +1,12 @@
-import { ExtendContext, ExtendPlugin, type WindowManager } from '@netless/window-manager';
+import type { ExtendContext, WindowManager } from '@netless/window-manager';
 import type { PasteCustomResult, PasteDocViewResult, PasteFileResult, PasteImageResult, PasteMediaResult, PastePdfResult, PasteSildeResult } from './types';
 import xss from 'xss';
-import { isBoolean } from 'lodash';
+import isBoolean from 'lodash/isBoolean';
 import { genUID } from './utils';
 import { ObserverSet } from './ObserverSet';
 import { UploadingUI } from './componet/UploadingUI';
 import { Language } from './componet/locale';
+import { ExtendPlugin } from './external';
 
 
 export type PasteState = 'error' | 'cancel' | 'start' | 'end' | 'progress';
