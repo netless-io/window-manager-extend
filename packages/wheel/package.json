@@ -18,23 +18,23 @@
     "lodash": "^4.17.21"
   },
   "devDependencies": {
-    "@netless/window-manager": "^1.0.6",
+    "@netless/window-manager": "^1.0.14",
     "@types/lodash": "^4.17.4",
-    "white-web-sdk": ">=2.16.53",
+    "white-web-sdk": ">=2.16.54",
     "@netless/app-presentation": "0.1.9-beta.8",
-    "@netless/app-slide": "0.2.87-beta.0"
+    "@netless/app-slide": "0.2.99"
   },
   "peerDependencies": {
-    "@netless/window-manager": ">=1.0.6",
+    "@netless/window-manager": ">=1.0.14",
     "@netless/app-presentation": ">=0.1.9-beta.8",
-    "@netless/app-slide": ">=0.2.87-beta.0",
-    "white-web-sdk": ">=2.16.53"
+    "@netless/app-slide": ">=0.2.99",
+    "white-web-sdk": ">=2.16.54"
   },
   "optionalDependencies": {
-    "@netless/window-manager": ">=1.0.6",
+    "@netless/window-manager": ">=1.0.14",
     "@netless/app-presentation": ">=0.1.9-beta.8",
-    "@netless/app-slide": ">=0.2.87-beta.0",
-    "white-web-sdk": ">=2.16.53"
+    "@netless/app-slide": ">=0.2.99",
+    "white-web-sdk": ">=2.16.54"
   },
   "files": [
     "dist",

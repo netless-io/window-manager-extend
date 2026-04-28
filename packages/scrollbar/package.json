@@ -18,14 +18,14 @@
     "lodash": "^4.17.21"
   },
   "devDependencies": {
-    "@netless/window-manager": "^1.0.6",
+    "@netless/window-manager": "^1.0.14",
     "@types/lodash": "^4.17.4",
     "esbuild-inline-sass": "^0.4.4",
-    "white-web-sdk": ">=2.16.53"
+    "white-web-sdk": ">=2.16.54"
   },
   "peerDependencies": {
-    "@netless/window-manager": ">=1.0.6",
-    "white-web-sdk": ">=2.16.53"
+    "@netless/window-manager": ">=1.0.14",
+    "white-web-sdk": ">=2.16.54"
   },
   "files": [
     "dist",

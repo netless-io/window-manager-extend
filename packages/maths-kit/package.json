@@ -1,6 +1,6 @@
 {
   "name": "@netless/window-manager-maths-kit-extend",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "",
   "main": "dist/extend-maths-kit.js",
   "module": "dist/extend-maths-kit.esm.js",
@@ -19,17 +19,17 @@
     "@netless/maths-kit": "^0.0.6"
   },
   "devDependencies": {
-    "@netless/window-manager": "^1.0.6",
+    "@netless/window-manager": "^1.0.14",
     "@types/lodash": "^4.17.4",
-    "white-web-sdk": ">=2.16.53"
+    "white-web-sdk": ">=2.16.54"
   },
   "peerDependencies": {
-    "@netless/window-manager": ">=1.0.6",
-    "white-web-sdk": ">=2.16.53"
+    "@netless/window-manager": ">=1.0.14",
+    "white-web-sdk": ">=2.16.54"
   },
   "optionalDependencies": {
-    "@netless/window-manager": ">=1.0.6",
-    "white-web-sdk": ">=2.16.53"
+    "@netless/window-manager": ">=1.0.14",
+    "white-web-sdk": ">=2.16.54"
   },
   "files": [
     "dist",
